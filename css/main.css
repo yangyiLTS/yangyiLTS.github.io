@@ -1874,7 +1874,7 @@ pre .javascript .function {
   width: 4px;
   height: 4px;
   border-radius: 50%;
-  background: #ff50e4;
+  background: #45ff66;
 }
 .links-of-blogroll {
   font-size: 13px;
@@ -3170,5 +3170,16 @@ pre .javascript .function {
   }
   .pagination {
     margin: 8px 0 0;
+  }
+}
+@media screen and (min-width: 1200px) {
+  body {
+    background-image: url("/images/anchor-lee-181406.jpg");
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-position: 50% 50%;
+  }
+  #footer a {
+    color: #eee;
   }
 }
