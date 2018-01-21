@@ -126,7 +126,7 @@
 <meta property="og:site_name" content="洋溢着温暖的微笑">
 <meta property="og:description" content="我的博客最初是部署在GitHub Pages上，由于万里长城的原因有时候打开极慢，而且使用自定义域名的时候无法启用https。我手上还有一台鹅厂的1C1G1M小水管云服务器，使用Nginx HTTP server，配合Let’s Encrypt的免费服务器证书、GitHub的webhook服务，最终实现服务端网站的自动更新部署。">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2018-01-21T10:20:55.232Z">
+<meta property="og:updated_time" content="2018-01-21T10:44:26.224Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Nginx + Hexo 实现博客备份、自动部署及全站https">
 <meta name="twitter:description" content="我的博客最初是部署在GitHub Pages上，由于万里长城的原因有时候打开极慢，而且使用自定义域名的时候无法启用https。我手上还有一台鹅厂的1C1G1M小水管云服务器，使用Nginx HTTP server，配合Let’s Encrypt的免费服务器证书、GitHub的webhook服务，最终实现服务端网站的自动更新部署。">
@@ -375,7 +375,7 @@
                   <span class="post-meta-item-text">字数统计&#58;</span>
                 
                 <span title="字数统计">
-                  1,423
+                  1,421
                 </span>
               
 
@@ -410,7 +410,9 @@
 <li>云服务器收到webhook通知的时候，pull新的Hexo源文件，在服务器中完成静态页面的构建</li>
 <li>云服务器配置Nginx和SSL证书进行静态页面的发布，页面文件在hexo目录的public/目录下</li>
 </ol>
-<p><em>我的Hexo源文件存放在一个私有仓库里，如果托管于公开仓库，博客的源文件一般不涉及重要的隐私，但是会暴露一些博客的配置文件，整个博客暴露在别人眼下也感觉有点不舒服。因为我还有一段时间的GitHub私有仓库优惠，所以暂时托管于GitHub。替代方案有国内的<a href="https://coding.net/" target="_blank" rel="noopener">Coding</a>，他家提供有限的私有仓库，托管一个博客已经足够了。</em></p>
+<blockquote>
+<p>我的Hexo源文件存放在一个私有仓库里，博客的源文件一般不涉及重要的隐私，但是如果托管于公开仓库，会暴露博客的配置文件，整个博客暴露在别人眼下也感觉有点不舒服。因为我还有一段时间的GitHub私有仓库优惠，所以暂时托管于GitHub。替代方案有国内的<a href="https://coding.net/" target="_blank" rel="noopener">Coding</a>，他家提供有限的私有仓库，托管一个博客已经足够了。</p>
+</blockquote>
 <h1 id="配置环境"><a href="#配置环境" class="headerlink" title="配置环境"></a>配置环境</h1><h2 id="本地机器环境"><a href="#本地机器环境" class="headerlink" title="本地机器环境"></a>本地机器环境</h2><p>node.js、hexo、git以及配置git ssh密钥是基本环境，搜索一下有很多。</p>
 <p><a href="http://blog.csdn.net/jzooo/article/details/46781805" target="_blank" rel="noopener">参考博文：零基础免费搭建个人博客-hexo+github</a></p>
 <p>针对“国内拉npm比拉屎还难”的情况，是真的，可以切换到淘宝镜像，输入命令：</p>
