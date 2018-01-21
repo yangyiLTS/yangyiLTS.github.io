@@ -126,7 +126,7 @@
 <meta property="og:site_name" content="洋溢着温暖的微笑">
 <meta property="og:description" content="我的博客最初是部署在GitHub Pages上，由于万里长城的原因有时候打开极慢，而且使用自定义域名的时候无法启用https。我手上还有一台鹅厂的1C1G1M小水管云服务器，使用Nginx HTTP server，配合Let’s Encrypt的免费服务器证书、GitHub的webhook服务，最终实现服务端网站的自动更新部署。">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2018-01-21T10:08:33.747Z">
+<meta property="og:updated_time" content="2018-01-21T10:20:55.232Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Nginx + Hexo 实现博客备份、自动部署及全站https">
 <meta name="twitter:description" content="我的博客最初是部署在GitHub Pages上，由于万里长城的原因有时候打开极慢，而且使用自定义域名的时候无法启用https。我手上还有一台鹅厂的1C1G1M小水管云服务器，使用Nginx HTTP server，配合Let’s Encrypt的免费服务器证书、GitHub的webhook服务，最终实现服务端网站的自动更新部署。">
@@ -375,7 +375,7 @@
                   <span class="post-meta-item-text">字数统计&#58;</span>
                 
                 <span title="字数统计">
-                  1,347
+                  1,423
                 </span>
               
 
@@ -416,7 +416,14 @@
 <p>针对“国内拉npm比拉屎还难”的情况，是真的，可以切换到淘宝镜像，输入命令：</p>
 <pre><code>$ npm install -g cnpm --registry=https://registry.npm.taobao.org
 </code></pre><p>之后就使用cnpm 代替npm</p>
-<h2 id="云服务器环境"><a href="#云服务器环境" class="headerlink" title="云服务器环境"></a>云服务器环境</h2><h3 id="Nginx"><a href="#Nginx" class="headerlink" title="Nginx"></a>Nginx</h3><p>我用的服务器镜像是Centos 7，首先安装Nginx</p>
+<h2 id="云服务器环境"><a href="#云服务器环境" class="headerlink" title="云服务器环境"></a>云服务器环境</h2><h3 id="Hexo"><a href="#Hexo" class="headerlink" title="Hexo"></a>Hexo</h3><p>同样也需要node.js、hexo、git以及配置git ssh密钥的基本环境。</p>
+<p>clone源文件仓库到服务器</p>
+<pre><code>$ mkdir /usr/share/hexo
+$ cd /usr/share/hexo
+$ git clone git@github.com:yangyiLTS/hexo.git
+</code></pre><p>然后需要重新安装hexo的依赖插件，之后不需要<code>hexo init</code>，直接</p>
+<pre><code>$ hexo clean &amp;&amp; hexo g
+</code></pre><h3 id="Nginx"><a href="#Nginx" class="headerlink" title="Nginx"></a>Nginx</h3><p>我用的服务器镜像是Centos 7，首先安装Nginx</p>
 <pre><code>$ yum install -y nginx
 </code></pre><p>修改/etc/nginx/nginx.conf文件中的server配置，举个例子</p>
 <pre><code>server {
@@ -484,11 +491,22 @@ server {
 }
 </code></pre><p>其中配置了使http请求强制跳转至https的域名重定向。</p>
 <p>然后访问<code>https://www.yangyilts.com/</code>测试</p>
-<h1 id="开启Webhook服务"><a href="#开启Webhook服务" class="headerlink" title="开启Webhook服务"></a>开启Webhook服务</h1>
+<h1 id="开启Webhook服务"><a href="#开启Webhook服务" class="headerlink" title="开启Webhook服务"></a>开启Webhook服务</h1><p>TODO</p>
+
       
     </div>
     
     
+    
+
+    
+      <div>
+        <div>
+    
+        <div style="text-align:center;color: #ccc;font-size:14px;">-------------本文结束 <i class="fa fa-lemon-o"></i> 感谢阅读-------------</div>
+    
+</div>
+      </div>
     
 
     
@@ -527,6 +545,8 @@ server {
     
 
     
+
+
 
     
 
@@ -713,7 +733,7 @@ server {
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#简介"><span class="nav-number">1.</span> <span class="nav-text">简介</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#基本思路"><span class="nav-number">2.</span> <span class="nav-text">基本思路</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#配置环境"><span class="nav-number">3.</span> <span class="nav-text">配置环境</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#本地机器环境"><span class="nav-number">3.1.</span> <span class="nav-text">本地机器环境</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#云服务器环境"><span class="nav-number">3.2.</span> <span class="nav-text">云服务器环境</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Nginx"><span class="nav-number">3.2.1.</span> <span class="nav-text">Nginx</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#为博客开启https"><span class="nav-number">3.3.</span> <span class="nav-text">为博客开启https</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Let’s-Encrypt-简介"><span class="nav-number">3.3.1.</span> <span class="nav-text">Let’s Encrypt 简介</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Let’s-Encrypt-安装"><span class="nav-number">3.3.2.</span> <span class="nav-text">Let’s Encrypt 安装</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#申请SSL证书"><span class="nav-number">3.3.3.</span> <span class="nav-text">申请SSL证书</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#配置Nginx"><span class="nav-number">3.3.4.</span> <span class="nav-text">配置Nginx</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#开启Webhook服务"><span class="nav-number">4.</span> <span class="nav-text">开启Webhook服务</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#简介"><span class="nav-number">1.</span> <span class="nav-text">简介</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#基本思路"><span class="nav-number">2.</span> <span class="nav-text">基本思路</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#配置环境"><span class="nav-number">3.</span> <span class="nav-text">配置环境</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#本地机器环境"><span class="nav-number">3.1.</span> <span class="nav-text">本地机器环境</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#云服务器环境"><span class="nav-number">3.2.</span> <span class="nav-text">云服务器环境</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Hexo"><span class="nav-number">3.2.1.</span> <span class="nav-text">Hexo</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Nginx"><span class="nav-number">3.2.2.</span> <span class="nav-text">Nginx</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#为博客开启https"><span class="nav-number">3.3.</span> <span class="nav-text">为博客开启https</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Let’s-Encrypt-简介"><span class="nav-number">3.3.1.</span> <span class="nav-text">Let’s Encrypt 简介</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Let’s-Encrypt-安装"><span class="nav-number">3.3.2.</span> <span class="nav-text">Let’s Encrypt 安装</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#申请SSL证书"><span class="nav-number">3.3.3.</span> <span class="nav-text">申请SSL证书</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#配置Nginx"><span class="nav-number">3.3.4.</span> <span class="nav-text">配置Nginx</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#开启Webhook服务"><span class="nav-number">4.</span> <span class="nav-text">开启Webhook服务</span></a></li></ol></div>
             
 
           </div>
