@@ -118,18 +118,18 @@
 
 
 
-<meta name="description" content="我的博客最初是部署在GitHub Pages上，由于万里长城的原因有时候打开极慢，而且使用自定义域名的时候无法启用https。我手上还有一台鹅厂的1C1G1M小水管，使用Nginx HTTP server，配合Let’s Encrypt的免费服务器证书、GitHub的webhook服务，最终实现服务端网站的自动更新部署。">
+<meta name="description" content="我的博客最初是部署在GitHub Pages上，由于万里长城的原因有时候打开极慢，而且使用自定义域名的时候无法启用https。我手上还有一台鹅厂的1C1G1M小水管云服务器，使用Nginx HTTP server，配合Let’s Encrypt的免费服务器证书、GitHub的webhook服务，最终实现服务端网站的自动更新部署。">
 <meta name="keywords" content="Hexo,Nginx,webhook">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Nginx + Hexo 实现博客备份、自动部署及全站https">
 <meta property="og:url" content="http://yangyiLTS.github.io/2018/01/21/Nginx-Hexo-实现博客自动部署及全站https/index.html">
 <meta property="og:site_name" content="洋溢着温暖的微笑">
-<meta property="og:description" content="我的博客最初是部署在GitHub Pages上，由于万里长城的原因有时候打开极慢，而且使用自定义域名的时候无法启用https。我手上还有一台鹅厂的1C1G1M小水管，使用Nginx HTTP server，配合Let’s Encrypt的免费服务器证书、GitHub的webhook服务，最终实现服务端网站的自动更新部署。">
+<meta property="og:description" content="我的博客最初是部署在GitHub Pages上，由于万里长城的原因有时候打开极慢，而且使用自定义域名的时候无法启用https。我手上还有一台鹅厂的1C1G1M小水管云服务器，使用Nginx HTTP server，配合Let’s Encrypt的免费服务器证书、GitHub的webhook服务，最终实现服务端网站的自动更新部署。">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2018-01-21T08:27:03.838Z">
+<meta property="og:updated_time" content="2018-01-21T10:08:33.747Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Nginx + Hexo 实现博客备份、自动部署及全站https">
-<meta name="twitter:description" content="我的博客最初是部署在GitHub Pages上，由于万里长城的原因有时候打开极慢，而且使用自定义域名的时候无法启用https。我手上还有一台鹅厂的1C1G1M小水管，使用Nginx HTTP server，配合Let’s Encrypt的免费服务器证书、GitHub的webhook服务，最终实现服务端网站的自动更新部署。">
+<meta name="twitter:description" content="我的博客最初是部署在GitHub Pages上，由于万里长城的原因有时候打开极慢，而且使用自定义域名的时候无法启用https。我手上还有一台鹅厂的1C1G1M小水管云服务器，使用Nginx HTTP server，配合Let’s Encrypt的免费服务器证书、GitHub的webhook服务，最终实现服务端网站的自动更新部署。">
 
 
 
@@ -375,7 +375,7 @@
                   <span class="post-meta-item-text">字数统计&#58;</span>
                 
                 <span title="字数统计">
-                  337
+                  1,347
                 </span>
               
 
@@ -400,11 +400,91 @@
       
 
       
-        <p>我的博客最初是部署在GitHub Pages上，由于万里长城的原因有时候打开极慢，而且使用自定义域名的时候无法启用https。我手上还有一台鹅厂的1C1G1M小水管，使用Nginx HTTP server，配合Let’s Encrypt的免费服务器证书、GitHub的webhook服务，最终实现服务端网站的自动更新部署。</p>
+        <p>我的博客最初是部署在GitHub Pages上，由于万里长城的原因有时候打开极慢，而且使用自定义域名的时候无法启用https。我手上还有一台鹅厂的1C1G1M小水管云服务器，使用Nginx HTTP server，配合Let’s Encrypt的免费服务器证书、GitHub的webhook服务，最终实现服务端网站的自动更新部署。</p>
 <a id="more"></a>
-<h1 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h1><p>Hexo是一个基于Node.js的博客框架，每撰写一篇日志，Hexo会生成出静态的博客页面，不依赖任何动态文件，这使得我们可以使用GitHub Pages发布个人博客。这种情况下，每次对博客的修改都需要进行博客构建、发布的步骤，整个过程稍显麻烦。并且更换电脑撰写博客时需要重新搭建Hexo环境以及拷贝博客的Hexo源文件。</p>
-<p>如果在GitHub仓库托管一份Hexo的源文件，在我更新博客后push到仓库里，服务器自动从GitHub下载Hexo的源文件，然后进行构建步骤，通过Nginx对外提供访问。这样，在我们写完日志之后，就只需进行push的操作，在其它的机器，也可以clone一份GitHub仓库的Hexo院文件，然后开始更新博客。</p>
-<h1 id="基本思路"><a href="#基本思路" class="headerlink" title="基本思路"></a>基本思路</h1><h1 id="配置环境"><a href="#配置环境" class="headerlink" title="配置环境"></a>配置环境</h1><h1 id="开启Webhook服务"><a href="#开启Webhook服务" class="headerlink" title="开启Webhook服务"></a>开启Webhook服务</h1>
+<h1 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h1><p>Hexo是一个基于Node.js的博客框架，每撰写一篇日志，Hexo会生成出静态的博客页面，不依赖任何动态文件，这使得我们可以使用GitHub Pages发布个人博客。这种情况下，每次对博客的修改都需要进行博客构建、发布的步骤，整个过程稍显麻烦。并且更换电脑撰写博客时需要重新搭建Hexo环境以及拷贝博客的Hexo源文件。如果需要使用个人域名解析到github.io的ip地址，也不能够开启https。</p>
+<p>如果在GitHub仓库托管一份Hexo的源文件，在我更新博客后push到仓库里，云服务器自动从GitHub下载Hexo的源文件，然后进行构建步骤，通过Nginx对外提供访问。这样，在我们写完日志之后，就只需进行push操作，在其它的机器，也可以clone一份GitHub仓库的Hexo源文件，然后开始更新博客。</p>
+<h1 id="基本思路"><a href="#基本思路" class="headerlink" title="基本思路"></a>基本思路</h1><ol>
+<li>GitHub创建私有仓库yangyilts/hexo，用于托管Hexo源文件</li>
+<li>开启GitHub的webhook服务，当仓库yangyilts/hexo收到新的push时通知云服务器</li>
+<li>云服务器收到webhook通知的时候，pull新的Hexo源文件，在服务器中完成静态页面的构建</li>
+<li>云服务器配置Nginx和SSL证书进行静态页面的发布，页面文件在hexo目录的public/目录下</li>
+</ol>
+<p><em>我的Hexo源文件存放在一个私有仓库里，如果托管于公开仓库，博客的源文件一般不涉及重要的隐私，但是会暴露一些博客的配置文件，整个博客暴露在别人眼下也感觉有点不舒服。因为我还有一段时间的GitHub私有仓库优惠，所以暂时托管于GitHub。替代方案有国内的<a href="https://coding.net/" target="_blank" rel="noopener">Coding</a>，他家提供有限的私有仓库，托管一个博客已经足够了。</em></p>
+<h1 id="配置环境"><a href="#配置环境" class="headerlink" title="配置环境"></a>配置环境</h1><h2 id="本地机器环境"><a href="#本地机器环境" class="headerlink" title="本地机器环境"></a>本地机器环境</h2><p>node.js、hexo、git以及配置git ssh密钥是基本环境，搜索一下有很多。</p>
+<p><a href="http://blog.csdn.net/jzooo/article/details/46781805" target="_blank" rel="noopener">参考博文：零基础免费搭建个人博客-hexo+github</a></p>
+<p>针对“国内拉npm比拉屎还难”的情况，是真的，可以切换到淘宝镜像，输入命令：</p>
+<pre><code>$ npm install -g cnpm --registry=https://registry.npm.taobao.org
+</code></pre><p>之后就使用cnpm 代替npm</p>
+<h2 id="云服务器环境"><a href="#云服务器环境" class="headerlink" title="云服务器环境"></a>云服务器环境</h2><h3 id="Nginx"><a href="#Nginx" class="headerlink" title="Nginx"></a>Nginx</h3><p>我用的服务器镜像是Centos 7，首先安装Nginx</p>
+<pre><code>$ yum install -y nginx
+</code></pre><p>修改/etc/nginx/nginx.conf文件中的server配置，举个例子</p>
+<pre><code>server {
+    listen       80;
+    server_name  your domain name;
+
+    #charset koi8-r;
+
+    #access_log  logs/host.access.log  main;
+
+    location / {
+        # your hexo/public dir
+        root   /hexo/public;
+        index  index.html index.htm;
+    }
+
+    ...
+}
+</code></pre><p>其实只要在默认文件内容下修改域名和网站根目录就可以了（网站根目录是hexo博客目录的public/目录），然后重启nginx</p>
+<pre><code>$ nginx -s reload
+</code></pre><p>这个时候，如果域名解析、服务器访问控制都设置正确，hexo已经成功进行过<code>$ hexo g</code>操作的情况下，就可以通过域名访问到博客了。</p>
+<h2 id="为博客开启https"><a href="#为博客开启https" class="headerlink" title="为博客开启https"></a>为博客开启https</h2><p>其实开启https的作用并不大，但是基于小绿锁的强迫症，不免得要折腾一番。好在申请Let’s Encrypt的免费证书也不是特别麻烦，有了小绿锁之后感觉整个博客都不一样了。</p>
+<p>以下部分的<a href="https://www.jianshu.com/p/eaac0d082ba2" target="_blank" rel="noopener">参考博客</a></p>
+<h3 id="Let’s-Encrypt-简介"><a href="#Let’s-Encrypt-简介" class="headerlink" title="Let’s Encrypt 简介"></a>Let’s Encrypt 简介</h3><p>Let’s Encrypt是一个免费并且开源的CA，且已经获得Mozilla、微软等主要浏览器厂商的根授信。它极大低降低DV证书的入门门槛，进而推进全网的HTTPS化。</p>
+<h3 id="Let’s-Encrypt-安装"><a href="#Let’s-Encrypt-安装" class="headerlink" title="Let’s Encrypt 安装"></a>Let’s Encrypt 安装</h3><p>以官方推荐的 letsencrypt-auto 脚本进行安装：</p>
+<pre><code>$ git clone https://github.com/letsencrypt/letsencrypt
+
+$ cd letsencrypt
+
+$ ./letsencrypt-auto --help
+</code></pre><h3 id="申请SSL证书"><a href="#申请SSL证书" class="headerlink" title="申请SSL证书"></a>申请SSL证书</h3><p>由于nginx已在运行中，故使用webroot模式来获取证书，命令：</p>
+<pre><code>$ ./letsencrypt-auto certonly --webroot --webroot-path /usr/share/hexo/public -d www.yangyilts.com --agree-tos --email youremail@mail.com
+</code></pre><p>证书申请成功后会显示证书的路径，以及到期时间。</p>
+<h3 id="配置Nginx"><a href="#配置Nginx" class="headerlink" title="配置Nginx"></a>配置Nginx</h3><p>生成2048位 DH parameters：</p>
+<pre><code>$ openssl dhparam -out /etc/ssl/certs/dhparams.pem 2048
+</code></pre><p>修改nginx.conf<br>    server {</p>
+<pre><code>listen 80;
+
+server_name www.yangyilts.com;
+
+return 301 https://$server_name$request_uri;
+
+}
+
+server {
+    listen       443 ssl;
+    server_name  www.yangyilts.com;
+
+    ssl_certificate /etc/letsencrypt/live/www.yangyilts.com/fullchain.pem;
+
+    ssl_certificate_key /etc/letsencrypt/live/www.yangyilts.com/privkey.pem;
+
+    ssl_dhparam /etc/ssl/certs/dhparams.pem;
+
+    ssl_ciphers &apos;ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-AES256-GCM-SHA384:DHE-RSA-AES128-GCM-SHA256:DHE-DSS-AES128-GCM-SHA256:kEDH+AESGCM:ECDHE-RSA-AES128-SHA256:ECDHE-ECDSA-AES128-SHA256:ECDHE-RSA-AES128-SHA:ECDHE-ECDSA-AES128-SHA:ECDHE-RSA-AES256-SHA384:ECDHE-ECDSA-AES256-SHA384:ECDHE-RSA-AES256-SHA:ECDHE-ECDSA-AES256-SHA:DHE-RSA-AES128-SHA256:DHE-RSA-AES128-SHA:DHE-DSS-AES128-SHA256:DHE-RSA-AES256-SHA256:DHE-DSS-AES256-SHA:DHE-RSA-AES256-SHA:AES128-GCM-SHA256:AES256-GCM-SHA384:AES128-SHA256:AES256-SHA256:AES128-SHA:AES256-SHA:AES:CAMELLIA:DES-CBC3-SHA:!aNULL:!eNULL:!EXPORT:!DES:!RC4:!MD5:!PSK:!aECDH:!EDH-DSS-DES-CBC3-SHA:!EDH-RSA-DES-CBC3-SHA:!KRB5-DES-CBC3-SHA&apos;;
+
+    ssl_prefer_server_ciphers  on;
+
+    location / {
+        root   /usr/share/hexo/public;
+        index  index.html index.htm;
+    }
+
+    ...
+}
+</code></pre><p>其中配置了使http请求强制跳转至https的域名重定向。</p>
+<p>然后访问<code>https://www.yangyilts.com/</code>测试</p>
+<h1 id="开启Webhook服务"><a href="#开启Webhook服务" class="headerlink" title="开启Webhook服务"></a>开启Webhook服务</h1>
       
     </div>
     
@@ -423,7 +503,7 @@
   <p><span>本文标题:</span><a href="/2018/01/21/Nginx-Hexo-实现博客自动部署及全站https/">Nginx + Hexo 实现博客备份、自动部署及全站https</a></p>
   <p><span>文章作者:</span><a href="/" title="访问 YANG Yi 的个人博客">YANG Yi</a></p>
   <p><span>发布时间:</span>2018年01月21日 - 02:01</p>
-  <p><span>最后更新:</span>2018年01月21日 - 16:01</p>
+  <p><span>最后更新:</span>2018年01月21日 - 18:01</p>
   <p><span>原始链接:</span><a href="/2018/01/21/Nginx-Hexo-实现博客自动部署及全站https/" title="Nginx + Hexo 实现博客备份、自动部署及全站https">http://yangyiLTS.github.io/2018/01/21/Nginx-Hexo-实现博客自动部署及全站https/</a>
     <span class="copy-path"  title="点击复制文章链接"><i class="fa fa-clipboard" data-clipboard-text="http://yangyiLTS.github.io/2018/01/21/Nginx-Hexo-实现博客自动部署及全站https/"  aria-label="复制成功！"></i></span>
   </p>
@@ -633,7 +713,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#简介"><span class="nav-number">1.</span> <span class="nav-text">简介</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#基本思路"><span class="nav-number">2.</span> <span class="nav-text">基本思路</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#配置环境"><span class="nav-number">3.</span> <span class="nav-text">配置环境</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#开启Webhook服务"><span class="nav-number">4.</span> <span class="nav-text">开启Webhook服务</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#简介"><span class="nav-number">1.</span> <span class="nav-text">简介</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#基本思路"><span class="nav-number">2.</span> <span class="nav-text">基本思路</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#配置环境"><span class="nav-number">3.</span> <span class="nav-text">配置环境</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#本地机器环境"><span class="nav-number">3.1.</span> <span class="nav-text">本地机器环境</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#云服务器环境"><span class="nav-number">3.2.</span> <span class="nav-text">云服务器环境</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Nginx"><span class="nav-number">3.2.1.</span> <span class="nav-text">Nginx</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#为博客开启https"><span class="nav-number">3.3.</span> <span class="nav-text">为博客开启https</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Let’s-Encrypt-简介"><span class="nav-number">3.3.1.</span> <span class="nav-text">Let’s Encrypt 简介</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Let’s-Encrypt-安装"><span class="nav-number">3.3.2.</span> <span class="nav-text">Let’s Encrypt 安装</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#申请SSL证书"><span class="nav-number">3.3.3.</span> <span class="nav-text">申请SSL证书</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#配置Nginx"><span class="nav-number">3.3.4.</span> <span class="nav-text">配置Nginx</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#开启Webhook服务"><span class="nav-number">4.</span> <span class="nav-text">开启Webhook服务</span></a></li></ol></div>
             
 
           </div>
@@ -667,7 +747,7 @@
     
       <span class="post-meta-item-text">Site words total count&#58;</span>
     
-    <span title="Site words total count">2.2k</span>
+    <span title="Site words total count">3.2k</span>
   
 </div>
 
