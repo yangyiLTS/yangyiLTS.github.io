@@ -126,7 +126,7 @@
 <meta property="og:site_name" content="洋溢着温暖的微笑">
 <meta property="og:description" content="我的博客最初是部署在GitHub Pages上，由于万里长城的原因有时候打开极慢，而且使用自定义域名的时候无法启用https。我手上还有一台鹅厂的1C1G1M小水管，使用Nginx HTTP server，配合Let’s Encrypt的免费服务器证书、GitHub的webhook服务，最终实现服务端网站的自动更新部署。">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2018-01-21T08:13:10.955Z">
+<meta property="og:updated_time" content="2018-01-21T08:27:03.838Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Nginx + Hexo 实现博客备份、自动部署及全站https">
 <meta name="twitter:description" content="我的博客最初是部署在GitHub Pages上，由于万里长城的原因有时候打开极慢，而且使用自定义域名的时候无法启用https。我手上还有一台鹅厂的1C1G1M小水管，使用Nginx HTTP server，配合Let’s Encrypt的免费服务器证书、GitHub的webhook服务，最终实现服务端网站的自动更新部署。">
@@ -375,7 +375,7 @@
                   <span class="post-meta-item-text">字数统计&#58;</span>
                 
                 <span title="字数统计">
-                  235
+                  337
                 </span>
               
 
@@ -403,8 +403,8 @@
         <p>我的博客最初是部署在GitHub Pages上，由于万里长城的原因有时候打开极慢，而且使用自定义域名的时候无法启用https。我手上还有一台鹅厂的1C1G1M小水管，使用Nginx HTTP server，配合Let’s Encrypt的免费服务器证书、GitHub的webhook服务，最终实现服务端网站的自动更新部署。</p>
 <a id="more"></a>
 <h1 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h1><p>Hexo是一个基于Node.js的博客框架，每撰写一篇日志，Hexo会生成出静态的博客页面，不依赖任何动态文件，这使得我们可以使用GitHub Pages发布个人博客。这种情况下，每次对博客的修改都需要进行博客构建、发布的步骤，整个过程稍显麻烦。并且更换电脑撰写博客时需要重新搭建Hexo环境以及拷贝博客的Hexo源文件。</p>
-<p>如果在GitHub</p>
-<h1 id="配置环境"><a href="#配置环境" class="headerlink" title="配置环境"></a>配置环境</h1><h1 id="开启Webhook服务"><a href="#开启Webhook服务" class="headerlink" title="开启Webhook服务"></a>开启Webhook服务</h1>
+<p>如果在GitHub仓库托管一份Hexo的源文件，在我更新博客后push到仓库里，服务器自动从GitHub下载Hexo的源文件，然后进行构建步骤，通过Nginx对外提供访问。这样，在我们写完日志之后，就只需进行push的操作，在其它的机器，也可以clone一份GitHub仓库的Hexo院文件，然后开始更新博客。</p>
+<h1 id="基本思路"><a href="#基本思路" class="headerlink" title="基本思路"></a>基本思路</h1><h1 id="配置环境"><a href="#配置环境" class="headerlink" title="配置环境"></a>配置环境</h1><h1 id="开启Webhook服务"><a href="#开启Webhook服务" class="headerlink" title="开启Webhook服务"></a>开启Webhook服务</h1>
       
     </div>
     
@@ -633,7 +633,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#简介"><span class="nav-number">1.</span> <span class="nav-text">简介</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#配置环境"><span class="nav-number">2.</span> <span class="nav-text">配置环境</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#开启Webhook服务"><span class="nav-number">3.</span> <span class="nav-text">开启Webhook服务</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#简介"><span class="nav-number">1.</span> <span class="nav-text">简介</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#基本思路"><span class="nav-number">2.</span> <span class="nav-text">基本思路</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#配置环境"><span class="nav-number">3.</span> <span class="nav-text">配置环境</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#开启Webhook服务"><span class="nav-number">4.</span> <span class="nav-text">开启Webhook服务</span></a></li></ol></div>
             
 
           </div>
@@ -667,7 +667,7 @@
     
       <span class="post-meta-item-text">Site words total count&#58;</span>
     
-    <span title="Site words total count">2.1k</span>
+    <span title="Site words total count">2.2k</span>
   
 </div>
 
