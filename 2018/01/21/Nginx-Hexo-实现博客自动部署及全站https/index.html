@@ -118,19 +118,20 @@
 
 
 
-<meta name="description" content="我的博客最初是部署在GitHub Pages上，由于万里长城的原因有时候打开极慢，而且使用自定义域名的时候无法启用https。我手上还有一台鹅厂的1C1G1M小水管云服务器，使用Nginx HTTP server，配合Let’s Encrypt的免费服务器证书、GitHub的webhooks服务，最终实现服务端网站的自动更新部署。">
+<meta name="description" content="我的博客最初是部署在GitHub Pages上，由于万里长城的原因有时候打开极慢，而且使用自定义域名的时候无法启用https。我手上还有一台鹅厂的1C1G1M小水管云服务器，使用Nginx HTTP server，配合Let’s Encrypt的免费服务器证书、GitHub的webhooks服务，最终实现博客源文件的版本控制、服务端网站的自动更新部署。">
 <meta name="keywords" content="Hexo,Nginx,webhook">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Nginx + Hexo 实现博客备份、自动部署及全站https">
 <meta property="og:url" content="http://yangyiLTS.github.io/2018/01/21/Nginx-Hexo-实现博客自动部署及全站https/index.html">
 <meta property="og:site_name" content="洋溢着温暖的微笑">
-<meta property="og:description" content="我的博客最初是部署在GitHub Pages上，由于万里长城的原因有时候打开极慢，而且使用自定义域名的时候无法启用https。我手上还有一台鹅厂的1C1G1M小水管云服务器，使用Nginx HTTP server，配合Let’s Encrypt的免费服务器证书、GitHub的webhooks服务，最终实现服务端网站的自动更新部署。">
+<meta property="og:description" content="我的博客最初是部署在GitHub Pages上，由于万里长城的原因有时候打开极慢，而且使用自定义域名的时候无法启用https。我手上还有一台鹅厂的1C1G1M小水管云服务器，使用Nginx HTTP server，配合Let’s Encrypt的免费服务器证书、GitHub的webhooks服务，最终实现博客源文件的版本控制、服务端网站的自动更新部署。">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="https://picbucket-1253466787.image.myqcloud.com/2018.1/webhooks3.png">
-<meta property="og:updated_time" content="2018-01-21T17:58:48.381Z">
+<meta property="og:image" content="https://picbucket-1253466787.image.myqcloud.com/2018.1/webhookping.png">
+<meta property="og:updated_time" content="2018-01-23T12:22:46.759Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Nginx + Hexo 实现博客备份、自动部署及全站https">
-<meta name="twitter:description" content="我的博客最初是部署在GitHub Pages上，由于万里长城的原因有时候打开极慢，而且使用自定义域名的时候无法启用https。我手上还有一台鹅厂的1C1G1M小水管云服务器，使用Nginx HTTP server，配合Let’s Encrypt的免费服务器证书、GitHub的webhooks服务，最终实现服务端网站的自动更新部署。">
+<meta name="twitter:description" content="我的博客最初是部署在GitHub Pages上，由于万里长城的原因有时候打开极慢，而且使用自定义域名的时候无法启用https。我手上还有一台鹅厂的1C1G1M小水管云服务器，使用Nginx HTTP server，配合Let’s Encrypt的免费服务器证书、GitHub的webhooks服务，最终实现博客源文件的版本控制、服务端网站的自动更新部署。">
 <meta name="twitter:image" content="https://picbucket-1253466787.image.myqcloud.com/2018.1/webhooks3.png">
 
 
@@ -202,7 +203,7 @@
       </a>
     </div>
       
-        <p class="site-subtitle">年轻人的第一个网站~</p>
+        <p class="site-subtitle"></p>
       
   </div>
 
@@ -377,7 +378,7 @@
                   <span class="post-meta-item-text">字数统计&#58;</span>
                 
                 <span title="字数统计">
-                  1,849
+                  2,017
                 </span>
               
 
@@ -402,7 +403,7 @@
       
 
       
-        <p>我的博客最初是部署在GitHub Pages上，由于万里长城的原因有时候打开极慢，而且使用自定义域名的时候无法启用https。我手上还有一台鹅厂的1C1G1M小水管云服务器，使用Nginx HTTP server，配合Let’s Encrypt的免费服务器证书、GitHub的webhooks服务，最终实现服务端网站的自动更新部署。</p>
+        <p>我的博客最初是部署在GitHub Pages上，由于万里长城的原因有时候打开极慢，而且使用自定义域名的时候无法启用https。我手上还有一台鹅厂的1C1G1M小水管云服务器，使用Nginx HTTP server，配合Let’s Encrypt的免费服务器证书、GitHub的webhooks服务，最终实现博客源文件的版本控制、服务端网站的自动更新部署。</p>
 <a id="more"></a>
 <h1 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h1><p>Hexo是一个基于Node.js的博客框架，每撰写一篇日志，Hexo会生成出静态的博客页面，不依赖任何动态文件，这使得我们可以使用GitHub Pages发布个人博客。这种情况下，每次对博客的修改都需要进行博客构建、发布的步骤，整个过程稍显麻烦。并且更换电脑撰写博客时需要重新搭建Hexo环境以及拷贝博客的Hexo源文件。如果需要使用个人域名解析到github.io的ip地址，也不能够开启https。</p>
 <p>如果在GitHub仓库托管一份Hexo的源文件，在我更新博客后push到仓库里，云服务器自动从GitHub下载Hexo的源文件，然后进行构建步骤，通过Nginx对外提供访问。这样，在我们写完日志之后，就只需进行push操作，在其它的机器，也可以clone一份GitHub仓库的Hexo源文件，然后开始更新博客。</p>
@@ -501,7 +502,7 @@ server {
 <p><a href="https://xiaozhou.net/auto-build-and-deploy-of-hexo-2017-12-17.html" target="_blank" rel="noopener">这一小节的参考博客。</a></p>
 <h2 id="Webhook工具配置"><a href="#Webhook工具配置" class="headerlink" title="Webhook工具配置"></a>Webhook工具配置</h2><p>在<a href="https://github.com/adnanh/webhook/releases" target="_blank" rel="noopener">releases</a>中下载编译完成的文件，然后解压得到一个可执行文件webhook</p>
 <pre><code>$ wget https://github.com/adnanh/webhook/releases/download/2.6.8/webhook-linux-amd64.tar.gz
-</code></pre><p>新建一个 hooks.json，需要指定一个<code>&quot;id&quot;</code>，以及<code>&quot;secert&quot;</code>，<code>&quot;execute-command&quot;</code>处填入收到通知后，需要执行的<code>build.sh</code>脚本的地址，<code>&quot;command-working-directory&quot;</code>填入执行脚本的目录，也就是hexo目录。其中<code>&quot;secert&quot;</code>的作用是使用hash验证收到的Post请求是否来源于合法的Git服务器。下面是示例</p>
+</code></pre><p>新建一个 hooks.json，需要指定一个<code>&quot;id&quot;</code>，以及<code>&quot;secert&quot;</code>，<code>&quot;execute-command&quot;</code>处填入收到通知后，需要执行的<code>build.sh</code>脚本的地址，<code>&quot;command-working-directory&quot;</code>填入执行脚本的目录，也就是hexo目录。下面是示例</p>
 <pre><code>// hooks.json
 [
   {
@@ -523,12 +524,25 @@ server {
       }
   }
 ]
-</code></pre><h2 id="GitHub-Webhooks配置"><a href="#GitHub-Webhooks配置" class="headerlink" title="GitHub Webhooks配置"></a>GitHub Webhooks配置</h2><p>这里，我要使用的是当仓库收到push时，向我云服务器的域名发送一个post请求。</p>
+</code></pre><p>其中<code>&quot;secert&quot;</code>的作用是使用hash验证收到的Post请求是否来源于合法的Git服务器。</p>
+<p>新建一个脚本<code>/usr/share/hexo/build.sh</code>:</p>
+<pre><code>#!/bin/bash
+
+rm -rf update.log
+git pull | tee build.log
+hexo clean &amp;&amp; hexo g  | tee build.log
+</code></pre><p>然后，使用命令<br>    $ ./webhook -hooks hooks.json -verbose<br>就可以运行Webhook了</p>
+<h2 id="GitHub-Webhooks配置"><a href="#GitHub-Webhooks配置" class="headerlink" title="GitHub Webhooks配置"></a>GitHub Webhooks配置</h2><p>这里，我要使用的是当仓库收到push时，向我云服务器的域名发送一个post请求。</p>
 <p>webhooks的设置在仓库的setting里面：</p>
 <p><img src="https://picbucket-1253466787.image.myqcloud.com/2018.1/webhooks3.png" alt=""></p>
+<p>添加一个webhook</p>
 <p>Secret填入上面设置的<code>&quot;secert&quot;</code>，PayloadURL填入<code>http://yourdomain.com:9000/hooks/webhook_id</code>，然后post请求会被发到服务器的9000端口。</p>
-<h2 id="运行"><a href="#运行" class="headerlink" title="运行"></a>运行</h2><p>——————————待续</p>
-
+<h2 id="运行"><a href="#运行" class="headerlink" title="运行"></a>运行</h2><p>在GitHub新建一个Webhook的时候，GitHub会自动发送一个ping事件的POST</p>
+<p><img src="https://picbucket-1253466787.image.myqcloud.com/2018.1/webhookping.png" alt=""></p>
+<p>如果POST请求被服务器上的Webhook成功响应，就会返回200 OK状态。如果返回值不是200，则需要检查配置的问题，然后Redeliver重新发送POST请求。</p>
+<p>之前启动的Webhook会在退出服务器终端后终止，使用nohup使它长驻后台</p>
+<pre><code>$ nohup ./webhook -hooks /path/hooks.json -verbose &gt; webhook.log 2&gt;&amp;1 &amp;
+</code></pre>
       
     </div>
     
@@ -557,7 +571,7 @@ server {
   <p><span>本文标题:</span><a href="/2018/01/21/Nginx-Hexo-实现博客自动部署及全站https/">Nginx + Hexo 实现博客备份、自动部署及全站https</a></p>
   <p><span>文章作者:</span><a href="/" title="访问 YANG Yi 的个人博客">YANG Yi</a></p>
   <p><span>发布时间:</span>2018年01月21日 - 02:01</p>
-  <p><span>最后更新:</span>2018年01月22日 - 01:01</p>
+  <p><span>最后更新:</span>2018年01月23日 - 20:01</p>
   <p><span>原始链接:</span><a href="/2018/01/21/Nginx-Hexo-实现博客自动部署及全站https/" title="Nginx + Hexo 实现博客备份、自动部署及全站https">http://yangyiLTS.github.io/2018/01/21/Nginx-Hexo-实现博客自动部署及全站https/</a>
     <span class="copy-path"  title="点击复制文章链接"><i class="fa fa-clipboard" data-clipboard-text="http://yangyiLTS.github.io/2018/01/21/Nginx-Hexo-实现博客自动部署及全站https/"  aria-label="复制成功！"></i></span>
   </p>
@@ -803,7 +817,7 @@ server {
     
       <span class="post-meta-item-text">Site words total count&#58;</span>
     
-    <span title="Site words total count">3.7k</span>
+    <span title="Site words total count">3.8k</span>
   
 </div>
 
