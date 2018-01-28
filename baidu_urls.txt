@@ -1,7 +1,7 @@
-http://www.yangyilts.com/2018/PAT-B-1048-数字加密、-1049-数列的片段和.html/
-http://www.yangyilts.com/2018/PAT-B-1045-快速排序.html/
-http://www.yangyilts.com/2018/给树莓派上的OSMC安装简单桌面和Chromium.html/
-http://www.yangyilts.com/2018/Nginx-Hexo-实现博客自动部署及全站https.html/
-http://www.yangyilts.com/2018/使用腾讯云作为Hexo图床.html/
-http://www.yangyilts.com/2018/wechat-auto-jump.html/
-http://www.yangyilts.com/2018/hello-world.html/
+https://www.yangyilts.com/2018/PAT-B-1048-数字加密、-1049-数列的片段和.html/
+https://www.yangyilts.com/2018/PAT-B-1045-快速排序.html/
+https://www.yangyilts.com/2018/给树莓派上的OSMC安装简单桌面和Chromium.html/
+https://www.yangyilts.com/2018/Nginx-Hexo-实现博客自动部署及全站https.html/
+https://www.yangyilts.com/2018/使用腾讯云作为Hexo图床.html/
+https://www.yangyilts.com/2018/wechat-auto-jump.html/
+https://www.yangyilts.com/2018/hello-world.html/
