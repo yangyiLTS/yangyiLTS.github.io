@@ -410,25 +410,15 @@
 
       
         
-          
-            <p>这是来自开源书籍500 Lines or Less中A Web Crawler With asyncio Coroutines一节的翻译。翻译略水，以原文为准。</p>
+          <p>这是来自开源书籍500 Lines or Less中A Web Crawler With asyncio Coroutines一节的翻译。翻译略水，以原文为准。</p>
 <p><a href="http://aosabook.org/en/500L/a-web-crawler-with-asyncio-coroutines.html" target="_blank" rel="noopener">A Web Crawler With asyncio Coroutines - A. Jesse Jiryu Davis and Guido van Rossum</a></p>
-<p>A. Jesse Jiryu Davis是纽约MongoDB的一名工程师。他编写了Motor，异步MongoDB Python驱动，并且他是MongoDB C 驱动的首席开发者和PyMongo团队的成员。同时，他也对asyncio和Tornada有贡献。他的主页是<a href="http://emptysqua.re." target="_blank" rel="noopener">http://emptysqua.re.</a></p>
-<p>Guido van Rossum是一种主要用于web及线下的编程语言——Python的创造者。Python社区称之为“仁慈的独裁者”，它是来自短剧Monty Python的一个标题。Guido的主页是。</p>
-<h1 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h1><p><strong>Introduction</strong></p>
-<p>传统的计算机科学注重于可以以最快速度完成计算任务的更高效的算法。但是很多网络应用程序不把时间花在cpu计算上，而花在保持某些缓慢的、出现突发事件的网络连接上。这些应用程序带来了一个艰难的挑战：更有效率地等待大量的网络连接。一个解决这个问题的现代方案是使用asynchronous 异步I/O，也叫async。</p>
-<p>这一个章节提出一个简单的web爬虫。这个爬虫是一个原生async应用程序，它在等待大量网络响应的同时只占用很小的资源。爬虫能够获取的页面越多，它就越快结束。如果爬虫给每一个正在进行的请求分配一个线程，那么它会在sockets资源耗尽前先消耗完内存或其它线程相关的资源。使用异步I/O，就可以避免这种线程的消耗。</p>
-<p>我们通过三个阶段来实现这个例子。一，给出一个async事件循环并且编写一个爬虫通过回掉函数去调用这个循环，回调函数是一个高效的方式，但是把它扩展并应用在更复杂场景的时候会产生不可维护的代码。二，我们展示了Python协程的高效性和可扩展性，我们使用Python的生成器函数来实现简单协程。最后一个阶段，我们使用Python标准库”asyncio”里面来创建具有完整功能的协程，并且用一个async队列来协调它。</p>
-<h1 id="爬虫的目标"><a href="#爬虫的目标" class="headerlink" title="爬虫的目标"></a>爬虫的目标</h1><p><strong>The Task</strong></p>
-<p>一个web爬虫会找到并且下载一个网站上的所有页面，也许是为了索引或者归档它们。爬虫从一个根URL开始，获取每一个页面并解析，获取页面上没有访问过的链接，然后把链接加入一个队列。它会在找到的页面上没有未访问的链接并且队列为空时结束。</p>
-<p>我们可以通过同时下载多个页面来加速这个进程。当爬虫找到新的链接时，它会在不同的socket上同时为新的页面启动获取操作。它在响应到达时解析它们，并且把新的链接加入到队列中。</p>
-<h1 id="传统方法"><a href="#传统方法" class="headerlink" title="传统方法"></a>传统方法</h1><p><strong>The Traditional Approach</strong></p>
-<h1 id="异步I-O"><a href="#异步I-O" class="headerlink" title="异步I/O"></a>异步I/O</h1><p><strong>Async</strong></p>
-<h1 id="用回调函数编程"><a href="#用回调函数编程" class="headerlink" title="用回调函数编程"></a>用回调函数编程</h1><p><strong>Programming With Callbacks</strong></p>
-<h1 id="协程"><a href="#协程" class="headerlink" title="协程"></a>协程</h1><p><strong>Coroutines</strong></p>
-<h1 id="Python-生成器的工作原理"><a href="#Python-生成器的工作原理" class="headerlink" title="Python 生成器的工作原理"></a>Python 生成器的工作原理</h1><p><strong>How Python Generators Work</strong></p>
-
-          
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2018/A-Web-Crawler-With-asyncio-Coroutines-Part-1.html/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>
