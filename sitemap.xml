@@ -2,6 +2,13 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://www.yangyilts.com/2018/A-Web-Crawler-With-asyncio-Coroutines-Part-1.html/</loc>
+    
+    <lastmod>2018-02-08T15:33:34.254Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>https://www.yangyilts.com/categories/index.html</loc>
     
     <lastmod>2018-02-06T10:41:39.434Z</lastmod>

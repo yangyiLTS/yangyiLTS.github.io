@@ -107,7 +107,7 @@
 
 
 
-  <meta name="keywords" content="PAT-Advanced," />
+  <meta name="keywords" content="爬虫,Python," />
 
 
 
@@ -118,18 +118,18 @@
 
 
 
-<meta name="description" content="用到了计算机组成原理的知识，两个大整数相加时发生溢出，判断溢出后的数字求解。">
-<meta name="keywords" content="PAT-Advanced">
+<meta name="description" content="这是来自开源书籍500 Lines or Less中A Web Crawler With asyncio Coroutines一节的翻译。翻译略水，以原文为准。 A Web Crawler With asyncio Coroutines - A. Jesse Jiryu Davis and Guido van Rossum A. Jesse Jiryu Davis是纽约MongoDB的一名工程师。">
+<meta name="keywords" content="爬虫,Python">
 <meta property="og:type" content="article">
-<meta property="og:title" content="PAT-A 1065. A+B and C (64bit)">
-<meta property="og:url" content="https://www.yangyilts.com/2018/PAT-A-1065-A-B-and-C-64bit.html/index.html">
+<meta property="og:title" content="搬运 | 500 Lines or Less 基于Python协程的网页爬虫 （一） [施工中...]">
+<meta property="og:url" content="https://www.yangyilts.com/2018/A-Web-Crawler-With-asyncio-Coroutines-Part-1.html/index.html">
 <meta property="og:site_name" content="洋溢着温暖的微笑">
-<meta property="og:description" content="用到了计算机组成原理的知识，两个大整数相加时发生溢出，判断溢出后的数字求解。">
+<meta property="og:description" content="这是来自开源书籍500 Lines or Less中A Web Crawler With asyncio Coroutines一节的翻译。翻译略水，以原文为准。 A Web Crawler With asyncio Coroutines - A. Jesse Jiryu Davis and Guido van Rossum A. Jesse Jiryu Davis是纽约MongoDB的一名工程师。">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2018-01-29T14:48:34.715Z">
+<meta property="og:updated_time" content="2018-02-08T15:33:34.254Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="PAT-A 1065. A+B and C (64bit)">
-<meta name="twitter:description" content="用到了计算机组成原理的知识，两个大整数相加时发生溢出，判断溢出后的数字求解。">
+<meta name="twitter:title" content="搬运 | 500 Lines or Less 基于Python协程的网页爬虫 （一） [施工中...]">
+<meta name="twitter:description" content="这是来自开源书籍500 Lines or Less中A Web Crawler With asyncio Coroutines一节的翻译。翻译略水，以原文为准。 A Web Crawler With asyncio Coroutines - A. Jesse Jiryu Davis and Guido van Rossum A. Jesse Jiryu Davis是纽约MongoDB的一名工程师。">
 
 
 
@@ -159,13 +159,13 @@
 
 
 
-  <link rel="canonical" href="https://www.yangyilts.com/2018/PAT-A-1065-A-B-and-C-64bit.html/"/>
+  <link rel="canonical" href="https://www.yangyilts.com/2018/A-Web-Crawler-With-asyncio-Coroutines-Part-1.html/"/>
 
 
 
 
 
-  <title>PAT-A 1065. A+B and C (64bit) | 洋溢着温暖的微笑</title>
+  <title>搬运 | 500 Lines or Less 基于Python协程的网页爬虫 （一） [施工中...] | 洋溢着温暖的微笑</title>
   
 
 
@@ -292,7 +292,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://www.yangyilts.com/2018/PAT-A-1065-A-B-and-C-64bit.html/">
+    <link itemprop="mainEntityOfPage" href="https://www.yangyilts.com/2018/A-Web-Crawler-With-asyncio-Coroutines-Part-1.html/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="YANG Yi">
@@ -309,7 +309,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">PAT-A 1065. A+B and C (64bit)</h1>
+          <h1 class="post-title" itemprop="name headline">搬运 | 500 Lines or Less 基于Python协程的网页爬虫 （一） [施工中...]</h1>
         
 
         <div class="post-meta">
@@ -321,8 +321,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-01-29T22:08:27+08:00">
-                2018-01-29
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-02-08T19:47:25+08:00">
+                2018-02-08
               </time>
             
 
@@ -362,9 +362,9 @@
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a href="/2018/PAT-A-1065-A-B-and-C-64bit.html/#comments" itemprop="discussionUrl">
+                <a href="/2018/A-Web-Crawler-With-asyncio-Coroutines-Part-1.html/#comments" itemprop="discussionUrl">
                   <span class="post-comments-count disqus-comment-count"
-                        data-disqus-identifier="2018/PAT-A-1065-A-B-and-C-64bit.html/" itemprop="commentCount"></span>
+                        data-disqus-identifier="2018/A-Web-Crawler-With-asyncio-Coroutines-Part-1.html/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -386,7 +386,7 @@
                   <span class="post-meta-item-text">字数统计&#58;</span>
                 
                 <span title="字数统计">
-                  628
+                  813
                 </span>
               
 
@@ -411,76 +411,23 @@
       
 
       
-        <p>用到了计算机组成原理的知识，两个大整数相加时发生溢出，判断溢出后的数字求解。</p>
-<a id="more"></a>
-<p><strong>A 1065</strong></p>
-<p><a href="https://www.patest.cn/contests/pat-a-practise/1065" target="_blank" rel="noopener">PAT(Advanced) 1065. A+B and C (64bit)</a></p>
-<p>Given three integers A, B and C in [-263, 263], you are supposed to tell whether A+B &gt; C.</p>
-<p><strong>Input Specification:</strong></p>
-<p>The first line of the input gives the positive number of test cases, T (&lt;=10). Then T test cases follow, each consists of a single line containing three integers A, B and C, separated by single spaces.</p>
-<p><strong>Output Specification:</strong></p>
-<p>For each test case, output in one line “Case #X: true” if A+B&gt;C, or “Case #X: false” otherwise, where X is the case number (starting from 1).</p>
-<p><strong>Sample Input:</strong></p>
-<p>3<br>1 2 3<br>2 3 4<br>9223372036854775807 -9223372036854775808 0</p>
-<p><strong>Sample Output:</strong></p>
-<p>Case #1: false<br>Case #2: true<br>Case #3: false</p>
-<p><strong>题目大意</strong></p>
-<p>给出三个整数A、B、C，如果A+B&gt;C，输出ture，否则输出false。其中A、B、C的取值范围是[-2<sup>63</sup>, 2<sup>63</sup>]。</p>
-<p><strong>思路</strong></p>
-<p><em>参考《算法笔记》</em></p>
-<p>long long的取值范围是[-2<sup>63</sup>, 2<sup>63</sup>)，因此A和B相加可能会溢出，不能直接判断大小。在计算机组成原理中，如果两个正数相加发生溢出，则和为负数；如果两负数相加发生溢出，则和为正数。可以分析：</p>
-<ol>
-<li><p>当A+B&gt;=2<sup>63</sup>时，显然有A+B&gt;C，A+B会因超过long long的正向最大值而发生正溢出，由于题目给定的A和B最大均为2<sup>63</sup>-1，故A+B最大为2<sup>64</sup>-2，因此long long存储正溢出后的值的区间为[-2<sup>63</sup>, -2]，由(2<sup>64</sup>-2)%(2<sup>64</sup>)=-2可得右边界，所以当A&gt;0 &amp;&amp; B&gt;0 &amp;&amp; A+B&lt;0 时，输出true。</p>
-</li>
-<li><p>当A+B&lt;-2<sup>63</sup>时，显然有A+B&lt;C成立，但是A+B会因超过long long 的负向最小值而发生负溢出。由于题目给定的A和B的最小值为-2<sup>63</sup>，故A+B最小为-2<sup>64</sup>，因此使用long long 存储负溢出后的值的区间为[0, 2<sup>63</sup>)。所以当 A&lt;0 &amp;&amp; B<0 &&="" a+b="">=0时为负溢出，输出false。</0></p>
-</li>
-<li>当没有溢出的情况下，正常判断。</li>
-</ol>
-<p><strong>注意点：</strong></p>
-<ol>
-<li>算法笔记指出，测试数据中没有出现A、B取2<sup>63</sup>的情况，题目给的数据范围应该是[-2<sup>63</sup>, 2<sup>63</sup>)。</li>
-<li>A+B的计算结果必须存放到long long中才可以与C进行比较。</li>
-</ol>
-<p>AC代码</p>
-<pre><code>#include &lt;iostream&gt;
-#include &lt;cstdio&gt;
+        <p>这是来自开源书籍500 Lines or Less中A Web Crawler With asyncio Coroutines一节的翻译。翻译略水，以原文为准。</p>
+<p><a href="http://aosabook.org/en/500L/a-web-crawler-with-asyncio-coroutines.html" target="_blank" rel="noopener">A Web Crawler With asyncio Coroutines - A. Jesse Jiryu Davis and Guido van Rossum</a></p>
+<p>A. Jesse Jiryu Davis是纽约MongoDB的一名工程师。他编写了Motor，异步MongoDB Python驱动，并且他是MongoDB C 驱动的首席开发者和PyMongo团队的成员。同时，他也对asyncio和Tornada有贡献。他的主页是<a href="http://emptysqua.re." target="_blank" rel="noopener">http://emptysqua.re.</a></p>
+<p>Guido van Rossum是一种主要用于web及线下的编程语言——Python的创造者。Python社区称之为“仁慈的独裁者”，它是来自短剧Monty Python的一个标题。Guido的主页是。</p>
+<h1 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h1><p><strong>Introduction</strong></p>
+<p>传统的计算机科学注重于可以以最快速度完成计算任务的更高效的算法。但是很多网络应用程序不把时间花在cpu计算上，而花在保持某些缓慢的、出现突发事件的网络连接上。这些应用程序带来了一个艰难的挑战：更有效率地等待大量的网络连接。一个解决这个问题的现代方案是使用asynchronous 异步I/O，也叫async。</p>
+<p>这一个章节提出一个简单的web爬虫。这个爬虫是一个原生async应用程序，它在等待大量网络响应的同时只占用很小的资源。爬虫能够获取的页面越多，它就越快结束。如果爬虫给每一个正在进行的请求分配一个线程，那么它会在sockets资源耗尽前先消耗完内存或其它线程相关的资源。使用异步I/O，就可以避免这种线程的消耗。</p>
+<p>我们通过三个阶段来实现这个例子。一，给出一个async事件循环并且编写一个爬虫通过回掉函数去调用这个循环，回调函数是一个高效的方式，但是把它扩展并应用在更复杂场景的时候会产生不可维护的代码。二，我们展示了Python协程的高效性和可扩展性，我们使用Python的生成器函数来实现简单协程。最后一个阶段，我们使用Python标准库”asyncio”里面来创建具有完整功能的协程，并且用一个async队列来协调它。</p>
+<h1 id="爬虫的目标"><a href="#爬虫的目标" class="headerlink" title="爬虫的目标"></a>爬虫的目标</h1><p><strong>The Task</strong></p>
+<p>一个web爬虫会找到并且下载一个网站上的所有页面，也许是为了索引或者归档它们。爬虫从一个根URL开始，获取每一个页面并解析，获取页面上没有访问过的链接，然后把链接加入一个队列。它会在找到的页面上没有未访问的链接并且队列为空时结束。</p>
+<p>我们可以通过同时下载多个页面来加速这个进程。当爬虫找到新的链接时，它会在不同的socket上同时为新的页面启动获取操作。它在响应到达时解析它们，并且把新的链接加入到队列中。</p>
+<h1 id="传统方法"><a href="#传统方法" class="headerlink" title="传统方法"></a>传统方法</h1><p><strong>The Traditional Approach</strong></p>
+<h1 id="异步I-O"><a href="#异步I-O" class="headerlink" title="异步I/O"></a>异步I/O</h1><p><strong>Async</strong></p>
+<h1 id="用回调函数编程"><a href="#用回调函数编程" class="headerlink" title="用回调函数编程"></a>用回调函数编程</h1><p><strong>Programming With Callbacks</strong></p>
+<h1 id="协程"><a href="#协程" class="headerlink" title="协程"></a>协程</h1><p><strong>Coroutines</strong></p>
+<h1 id="Python-生成器的工作原理"><a href="#Python-生成器的工作原理" class="headerlink" title="Python 生成器的工作原理"></a>Python 生成器的工作原理</h1><p><strong>How Python Generators Work</strong></p>
 
-using namespace std;
-typedef long long ll;
-
-int main() {
-    int N;
-    cin &gt;&gt; N;
-    for (int i = 1; i &lt;= N; i++) {
-        ll a, b, c;
-        cin &gt;&gt; a &gt;&gt; b &gt;&gt; c;
-        ll res = a + b;
-        bool ans;
-        // 判断A+B
-        if (a &gt; 0 &amp;&amp; b &gt; 0 &amp;&amp; res &lt; 0) {
-            ans = 1;
-        }
-        else if (a &lt; 0 &amp;&amp; b &lt; 0 &amp;&amp; res &gt;= 0) {
-            ans = 0;
-        }
-        else if (res &gt; c) {
-            ans = 1;
-        }
-        else {
-            ans = 0;
-        }
-
-        if (ans) {
-            cout &lt;&lt; &quot;Case #&quot; &lt;&lt; i &lt;&lt; &quot;: true\n&quot;;
-        }
-        else {
-            cout &lt;&lt; &quot;Case #&quot; &lt;&lt; i &lt;&lt; &quot;: false\n&quot;;
-        }
-    }
-
-    return 0;
-}
-</code></pre>
       
     </div>
     
@@ -515,7 +462,9 @@ int main() {
       
         <div class="post-tags">
           
-            <a href="/tags/PAT-Advanced/" rel="tag"># PAT-Advanced</a>
+            <a href="/tags/爬虫/" rel="tag"># 爬虫</a>
+          
+            <a href="/tags/Python/" rel="tag"># Python</a>
           
         </div>
       
@@ -528,8 +477,8 @@ int main() {
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2018/PAT-B-1048-数字加密、-1049-数列的片段和.html/" rel="next" title="PAT-B 1048. 数字加密、 1049 数列的片段和">
-                <i class="fa fa-chevron-left"></i> PAT-B 1048. 数字加密、 1049 数列的片段和
+              <a href="/2018/一步退烧！REALFORCE-SE07T0-87UW-使用体验.html/" rel="next" title="一步退烧？REALFORCE SE07T0 87UW 使用体验 ">
+                <i class="fa fa-chevron-left"></i> 一步退烧？REALFORCE SE07T0 87UW 使用体验 
               </a>
             
           </div>
@@ -537,10 +486,6 @@ int main() {
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2018/PAT-A-1077-Kuchiguse.html/" rel="prev" title="PAT-A 1077.Kuchiguse">
-                PAT-A 1077.Kuchiguse <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -602,8 +547,17 @@ int main() {
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+      <section class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
@@ -683,6 +637,22 @@ int main() {
         </div>
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#介绍"><span class="nav-number">1.</span> <span class="nav-text">介绍</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#爬虫的目标"><span class="nav-number">2.</span> <span class="nav-text">爬虫的目标</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#传统方法"><span class="nav-number">3.</span> <span class="nav-text">传统方法</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#异步I-O"><span class="nav-number">4.</span> <span class="nav-text">异步I/O</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#用回调函数编程"><span class="nav-number">5.</span> <span class="nav-text">用回调函数编程</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#协程"><span class="nav-number">6.</span> <span class="nav-text">协程</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Python-生成器的工作原理"><span class="nav-number">7.</span> <span class="nav-text">Python 生成器的工作原理</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       
@@ -858,9 +828,9 @@ int main() {
     
       <script type="text/javascript">
         var disqus_config = function () {
-          this.page.url = 'https://www.yangyilts.com/2018/PAT-A-1065-A-B-and-C-64bit.html/';
-          this.page.identifier = '2018/PAT-A-1065-A-B-and-C-64bit.html/';
-          this.page.title = 'PAT-A 1065. A+B and C (64bit)';
+          this.page.url = 'https://www.yangyilts.com/2018/A-Web-Crawler-With-asyncio-Coroutines-Part-1.html/';
+          this.page.identifier = '2018/A-Web-Crawler-With-asyncio-Coroutines-Part-1.html/';
+          this.page.title = '搬运 | 500 Lines or Less 基于Python协程的网页爬虫 （一） [施工中...]';
         };
         var d = document, s = d.createElement('script');
         s.src = 'https://yangyilts.disqus.com/embed.js';
