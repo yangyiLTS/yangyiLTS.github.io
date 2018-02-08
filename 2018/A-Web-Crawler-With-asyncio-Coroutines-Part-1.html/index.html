@@ -118,18 +118,18 @@
 
 
 
-<meta name="description" content="这是来自开源书籍500 Lines or Less中A Web Crawler With asyncio Coroutines一节的翻译。翻译略水，以原文为准。 A Web Crawler With asyncio Coroutines - A. Jesse Jiryu Davis and Guido van Rossum">
+<meta name="description" content="这是来自开源书籍500 Lines or Less中A Web Crawler With asyncio Coroutines一节的翻译。手翻略水，以原文为准。 A Web Crawler With asyncio Coroutines - A. Jesse Jiryu Davis and Guido van Rossum">
 <meta name="keywords" content="爬虫,Python">
 <meta property="og:type" content="article">
 <meta property="og:title" content="搬运 | 500 Lines or Less 基于Python协程的网页爬虫 （一） [施工中...]">
 <meta property="og:url" content="https://www.yangyilts.com/2018/A-Web-Crawler-With-asyncio-Coroutines-Part-1.html/index.html">
 <meta property="og:site_name" content="洋溢着温暖的微笑">
-<meta property="og:description" content="这是来自开源书籍500 Lines or Less中A Web Crawler With asyncio Coroutines一节的翻译。翻译略水，以原文为准。 A Web Crawler With asyncio Coroutines - A. Jesse Jiryu Davis and Guido van Rossum">
+<meta property="og:description" content="这是来自开源书籍500 Lines or Less中A Web Crawler With asyncio Coroutines一节的翻译。手翻略水，以原文为准。 A Web Crawler With asyncio Coroutines - A. Jesse Jiryu Davis and Guido van Rossum">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2018-02-08T15:36:27.790Z">
+<meta property="og:updated_time" content="2018-02-08T16:24:42.142Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="搬运 | 500 Lines or Less 基于Python协程的网页爬虫 （一） [施工中...]">
-<meta name="twitter:description" content="这是来自开源书籍500 Lines or Less中A Web Crawler With asyncio Coroutines一节的翻译。翻译略水，以原文为准。 A Web Crawler With asyncio Coroutines - A. Jesse Jiryu Davis and Guido van Rossum">
+<meta name="twitter:description" content="这是来自开源书籍500 Lines or Less中A Web Crawler With asyncio Coroutines一节的翻译。手翻略水，以原文为准。 A Web Crawler With asyncio Coroutines - A. Jesse Jiryu Davis and Guido van Rossum">
 
 
 
@@ -386,7 +386,7 @@
                   <span class="post-meta-item-text">字数统计&#58;</span>
                 
                 <span title="字数统计">
-                  813
+                  1,123
                 </span>
               
 
@@ -411,19 +411,35 @@
       
 
       
-        <p>这是来自开源书籍500 Lines or Less中A Web Crawler With asyncio Coroutines一节的翻译。翻译略水，以原文为准。</p>
+        <p>这是来自开源书籍500 Lines or Less中A Web Crawler With asyncio Coroutines一节的翻译。手翻略水，以原文为准。</p>
 <p><a href="http://aosabook.org/en/500L/a-web-crawler-with-asyncio-coroutines.html" target="_blank" rel="noopener">A Web Crawler With asyncio Coroutines - A. Jesse Jiryu Davis and Guido van Rossum</a></p>
 <a id="more"></a>
 <p>A. Jesse Jiryu Davis是纽约MongoDB的一名工程师。他编写了Motor，异步MongoDB Python驱动，并且他是MongoDB C 驱动的首席开发者和PyMongo团队的成员。同时，他也对asyncio和Tornada有贡献。他的主页是<a href="http://emptysqua.re." target="_blank" rel="noopener">http://emptysqua.re.</a></p>
-<p>Guido van Rossum是一种主要用于web及线下的编程语言——Python的创造者。Python社区称之为“仁慈的独裁者”，它是来自短剧Monty Python的一个标题。Guido的主页是。</p>
-<h1 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h1><p><strong>Introduction</strong></p>
+<p>Guido van Rossum是一种主要用于web及线下的编程语言——Python的创造者。Python社区称之为“仁慈的独裁者”，它是来自短剧Monty Python的一个标题。Guido的主页是<a href="http://www.python.org/~guido/" target="_blank" rel="noopener">http://www.python.org/~guido/</a>。</p>
+<h1 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h1><p><strong>Introduction</strong></p>
 <p>传统的计算机科学注重于可以以最快速度完成计算任务的更高效的算法。但是很多网络应用程序不把时间花在cpu计算上，而花在保持某些缓慢的、出现突发事件的网络连接上。这些应用程序带来了一个艰难的挑战：更有效率地等待大量的网络连接。一个解决这个问题的现代方案是使用asynchronous 异步I/O，也叫async。</p>
-<p>这一个章节提出一个简单的web爬虫。这个爬虫是一个原生async应用程序，它在等待大量网络响应的同时只占用很小的资源。爬虫能够获取的页面越多，它就越快结束。如果爬虫给每一个正在进行的请求分配一个线程，那么它会在sockets资源耗尽前先消耗完内存或其它线程相关的资源。使用异步I/O，就可以避免这种线程的消耗。</p>
-<p>我们通过三个阶段来实现这个例子。一，给出一个async事件循环并且编写一个爬虫通过回掉函数去调用这个循环，回调函数是一个高效的方式，但是把它扩展并应用在更复杂场景的时候会产生不可维护的代码。二，我们展示了Python协程的高效性和可扩展性，我们使用Python的生成器函数来实现简单协程。最后一个阶段，我们使用Python标准库”asyncio”里面来创建具有完整功能的协程，并且用一个async队列来协调它。</p>
+<p>本文提出一个简单的web爬虫。这个爬虫是一个典型的async应用程序，它在等待大量网络响应的同时只进行很少计算。爬虫能够获取的页面越多，它就越快结束。如果爬虫给每一个正在进行的请求分配一个线程，那么它会在系统sockets资源耗尽前先消耗完内存或其它线程相关的资源。使用异步I/O，就可以避免对大量线程的依赖。</p>
+<p>我们通过三个阶段来实现这个例子。一，给出一个async事件循环并且编写一个爬虫通过回掉函数去调用这个循环，回调函数是一个高效的方式，但是把它扩展并应用在更复杂场景的时候会产生难以维护的代码。二，我们展示了Python协程的高效性和可扩展性，我们使用Python的生成器函数来实现简单协程。最后一个阶段，我们使用Python标准库”asyncio”里面来创建具有完整功能的协程，并且用一个async队列来协调它。</p>
 <h1 id="爬虫的目标"><a href="#爬虫的目标" class="headerlink" title="爬虫的目标"></a>爬虫的目标</h1><p><strong>The Task</strong></p>
-<p>一个web爬虫会找到并且下载一个网站上的所有页面，也许是为了索引或者归档它们。爬虫从一个根URL开始，获取每一个页面并解析，获取页面上没有访问过的链接，然后把链接加入一个队列。它会在找到的页面上没有未访问的链接并且队列为空时结束。</p>
-<p>我们可以通过同时下载多个页面来加速这个进程。当爬虫找到新的链接时，它会在不同的socket上同时为新的页面启动获取操作。它在响应到达时解析它们，并且把新的链接加入到队列中。</p>
-<h1 id="传统方法"><a href="#传统方法" class="headerlink" title="传统方法"></a>传统方法</h1><p><strong>The Traditional Approach</strong></p>
+<p>一个web爬虫会找到并且下载一个网站上的所有页面，也许是为了索引或者归档它们。爬虫从一个根URL开始，抓取每一个页面并解析，抓取页面上没有访问过的链接，然后把链接加入一个队列。它会在找到的页面上没有未访问的链接，并在队列为空时结束。</p>
+<p>我们可以通过同时下载多个页面来加速这个进程。当爬虫找到新的链接时，它会在不同的socket上同时为新的页面启动抓取操作。它在http响应到达时解析它们，并且把新的链接加入到队列中。过多并发请求带来的性能下降可能会导致最终的效能降低，所以我们限制了并发请求的数量，把剩余的链接放在队列里面知道某些正在进行的请求完成。</p>
+<h1 id="传统实现"><a href="#传统实现" class="headerlink" title="传统实现"></a>传统实现</h1><p><strong>The Traditional Approach</strong></p>
+<p>如何让我们的爬虫并发处理请求呢？传统上我们会创建一个线程池。每一个线程负责在一socket上下载一个页面。例如，从<code>xkcd.com</code>下载一个页面：</p>
+<pre><code>def fetch(url):
+    sock = socket.socket()
+    sock.connect((&apos;xkcd.com&apos;, 80))
+    request = &apos;GET {} HTTP/1.0\r\nHost: xkcd.com\r\n\r\n&apos;.format(url)
+    sock.send(request.encode(&apos;ascii&apos;))
+    response = b&apos;&apos;
+    chunk = sock.recv(4096)
+    while chunk:
+        response += chunk
+        chunk = sock.recv(4096)
+
+    # Page is now downloaded.
+    links = parse_links(response)
+    q.add(links)
+</code></pre><p>在默认状态下，socket操作是<em>阻塞的</em>：当线程调用一个方法例如<code>connect</code>或<code>recv</code>时，线程会暂停直到上面的操作完成<sup>[2]</sup>。因此，为了下载大量的页面，我们需要许多的线程。一个精巧的应用程序通过保持线程池中的空闲进程来控制创建进程所需要的系统花销，然后将它们检出以重复用于后续的任务，它就像管理sockets的连接池一样工作。</p>
 <h1 id="异步I-O"><a href="#异步I-O" class="headerlink" title="异步I/O"></a>异步I/O</h1><p><strong>Async</strong></p>
 <h1 id="用回调函数编程"><a href="#用回调函数编程" class="headerlink" title="用回调函数编程"></a>用回调函数编程</h1><p><strong>Programming With Callbacks</strong></p>
 <h1 id="协程"><a href="#协程" class="headerlink" title="协程"></a>协程</h1><p><strong>Coroutines</strong></p>
@@ -648,7 +664,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#介绍"><span class="nav-number">1.</span> <span class="nav-text">介绍</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#爬虫的目标"><span class="nav-number">2.</span> <span class="nav-text">爬虫的目标</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#传统方法"><span class="nav-number">3.</span> <span class="nav-text">传统方法</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#异步I-O"><span class="nav-number">4.</span> <span class="nav-text">异步I/O</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#用回调函数编程"><span class="nav-number">5.</span> <span class="nav-text">用回调函数编程</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#协程"><span class="nav-number">6.</span> <span class="nav-text">协程</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Python-生成器的工作原理"><span class="nav-number">7.</span> <span class="nav-text">Python 生成器的工作原理</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#简介"><span class="nav-number">1.</span> <span class="nav-text">简介</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#爬虫的目标"><span class="nav-number">2.</span> <span class="nav-text">爬虫的目标</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#传统实现"><span class="nav-number">3.</span> <span class="nav-text">传统实现</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#异步I-O"><span class="nav-number">4.</span> <span class="nav-text">异步I/O</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#用回调函数编程"><span class="nav-number">5.</span> <span class="nav-text">用回调函数编程</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#协程"><span class="nav-number">6.</span> <span class="nav-text">协程</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Python-生成器的工作原理"><span class="nav-number">7.</span> <span class="nav-text">Python 生成器的工作原理</span></a></li></ol></div>
             
 
           </div>
@@ -682,7 +698,7 @@
     
       <span class="post-meta-item-text">Site words total count&#58;</span>
     
-    <span title="Site words total count">9.7k</span>
+    <span title="Site words total count">10.1k</span>
   
 </div>
 
