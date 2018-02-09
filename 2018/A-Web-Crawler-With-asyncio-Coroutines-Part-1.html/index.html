@@ -126,7 +126,7 @@
 <meta property="og:site_name" content="洋溢着温暖的微笑">
 <meta property="og:description" content="这是来自开源书籍500 Lines or Less中A Web Crawler With asyncio Coroutines一节的翻译。手翻略水，以原文为准。 A Web Crawler With asyncio Coroutines - A. Jesse Jiryu Davis and Guido van Rossum">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2018-02-08T16:24:42.142Z">
+<meta property="og:updated_time" content="2018-02-09T14:01:05.724Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="搬运 | 500 Lines or Less 基于Python协程的网页爬虫 （一） [施工中...]">
 <meta name="twitter:description" content="这是来自开源书籍500 Lines or Less中A Web Crawler With asyncio Coroutines一节的翻译。手翻略水，以原文为准。 A Web Crawler With asyncio Coroutines - A. Jesse Jiryu Davis and Guido van Rossum">
@@ -386,7 +386,7 @@
                   <span class="post-meta-item-text">字数统计&#58;</span>
                 
                 <span title="字数统计">
-                  1,123
+                  1,728
                 </span>
               
 
@@ -440,7 +440,34 @@
     links = parse_links(response)
     q.add(links)
 </code></pre><p>在默认状态下，socket操作是<em>阻塞的</em>：当线程调用一个方法例如<code>connect</code>或<code>recv</code>时，线程会暂停直到上面的操作完成<sup>[2]</sup>。因此，为了下载大量的页面，我们需要许多的线程。一个精巧的应用程序通过保持线程池中的空闲进程来控制创建进程所需要的系统花销，然后将它们检出以重复用于后续的任务，它就像管理sockets的连接池一样工作。</p>
+<p>然而，线程会带来较大的系统开销，而且操作系统会对进程，用户或处理器可以拥有的线程数量有着各种各样严格的限制。在jesse的系统上，一个Python线程会占用大约50k的内存，而且启动数万个进程时会失败。如果我们在并发套接字上扩展到数万个并发操作，会在socket资源耗尽前耗尽线程资源。对线程来说，线程本身的开销和系统限制都是瓶颈。</p>
+<p>Dan Kegel在”The C10K problem”<sup>[3]</sup>中指出了多线程并发I/O的局限性。他说：</p>
+<blockquote>
+<p>是时候让web服务器同时处理上万个客户端了，不是吗？毕竟网络已经这么大了。</p>
+</blockquote>
+<p>Kegel撰写”C10K”的时候是1999年。一万个连接在今天听起来不多，问题的规模已经发生了变化，本质还是不变的。在之前，给每一个连接分配一个线程是不现实的。现在的容量相比过去已经提高了好几个数量级。的确，我们的小爬虫可以在多线程的情况下很好地工作。但对于有着成千上万个连接的大规模应用程序来说，这个限制仍然是：大多数系统仍然可以创建socket，但是线程已经耗光了。如何克服这个问题呢？</p>
 <h1 id="异步I-O"><a href="#异步I-O" class="headerlink" title="异步I/O"></a>异步I/O</h1><p><strong>Async</strong></p>
+<p>异步I/O使用非阻塞socket在单个线程上实现并发操作。回到我们的异步爬虫，在开始连接到服务器之前，我们先把socket设置为非阻塞：</p>
+<pre><code>sock = socket.socket()
+sock.setblocking(False)
+try:
+    sock.connect((&apos;xkcd.com&apos;, 80))
+except BlockingIOError:
+    pass
+</code></pre><p>令人恼火的是，非阻塞socket会在<code>connect</code>的过程中抛出一个异常，即使它的工作是正常的。这个异常复制了底层C函数的恼人行为，它会将<code>errno</code>设置为<code>EINPROGRESS</code>来告诉你它已经开始了。</p>
+<p>现在，我们的爬虫需要一个方法来知道连接何时成功建立，然后它就可以发送HTTP请求。我们可以通过一个循环简单实现：</p>
+<pre><code>request = &apos;GET {} HTTP/1.0\r\nHost: xkcd.com\r\n\r\n&apos;.format(url)
+encoded = request.encode(&apos;ascii&apos;)
+
+while True:
+    try:
+        sock.send(encoded)
+        break  # Done.
+    except OSError as e:
+        pass
+
+print(&apos;sent&apos;)
+</code></pre><p>但是这一个方法不仅浪费资源，而且不能有效地在多个socket的时候等待事件。</p>
 <h1 id="用回调函数编程"><a href="#用回调函数编程" class="headerlink" title="用回调函数编程"></a>用回调函数编程</h1><p><strong>Programming With Callbacks</strong></p>
 <h1 id="协程"><a href="#协程" class="headerlink" title="协程"></a>协程</h1><p><strong>Coroutines</strong></p>
 <h1 id="Python-生成器的工作原理"><a href="#Python-生成器的工作原理" class="headerlink" title="Python 生成器的工作原理"></a>Python 生成器的工作原理</h1><p><strong>How Python Generators Work</strong></p>
@@ -698,7 +725,7 @@
     
       <span class="post-meta-item-text">Site words total count&#58;</span>
     
-    <span title="Site words total count">10.1k</span>
+    <span title="Site words total count">10.7k</span>
   
 </div>
 
