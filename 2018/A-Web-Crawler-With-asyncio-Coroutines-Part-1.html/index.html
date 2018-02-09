@@ -126,7 +126,7 @@
 <meta property="og:site_name" content="洋溢着温暖的微笑">
 <meta property="og:description" content="这是来自开源书籍500 Lines or Less中A Web Crawler With asyncio Coroutines一节的翻译。手翻略水，以原文为准。 A Web Crawler With asyncio Coroutines - A. Jesse Jiryu Davis and Guido van Rossum">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2018-02-09T14:01:05.724Z">
+<meta property="og:updated_time" content="2018-02-09T17:07:46.062Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="搬运 | 500 Lines or Less 基于Python协程的网页爬虫 （一） [施工中...]">
 <meta name="twitter:description" content="这是来自开源书籍500 Lines or Less中A Web Crawler With asyncio Coroutines一节的翻译。手翻略水，以原文为准。 A Web Crawler With asyncio Coroutines - A. Jesse Jiryu Davis and Guido van Rossum">
@@ -386,7 +386,7 @@
                   <span class="post-meta-item-text">字数统计&#58;</span>
                 
                 <span title="字数统计">
-                  1,728
+                  2,078
                 </span>
               
 
@@ -467,8 +467,33 @@ while True:
         pass
 
 print(&apos;sent&apos;)
-</code></pre><p>但是这一个方法不仅浪费资源，而且不能有效地在多个socket的时候等待事件。</p>
-<h1 id="用回调函数编程"><a href="#用回调函数编程" class="headerlink" title="用回调函数编程"></a>用回调函数编程</h1><p><strong>Programming With Callbacks</strong></p>
+</code></pre><p>但是这个方法不仅浪费资源，而且不能有效地在使用多个socket的时候等待事件。在以前，BSD Unix对于这个问题的解决方案是使用<code>select</code>，一个等待事件发生在非阻塞socket或小数组上的C函数。如今，拥有大量连接的网络应用程序催生了类似于<code>poll</code>（轮询）的解决方案，例如BSD上的<code>kqueue</code>，和Linux上的<code>epoll</code>。这些API跟<code>select</code>很相似，而且在大量连接的使用场景下有着出色的表现。</p>
+<p>Python 3.4的<code>DefaultSelector</code>会调用系统上与<code>select</code>最相似的函数。为了注册关于网络I/O的通知，我们创建一个非阻塞socket并用默认选择器：</p>
+<pre><code>from selectors import DefaultSelector, EVENT_WRITE
+
+selector = DefaultSelector()
+
+sock = socket.socket()
+sock.setblocking(False)
+try:
+    sock.connect((&apos;xkcd.com&apos;, 80))
+except BlockingIOError:
+    pass
+
+def connected():
+    selector.unregister(sock.fileno())
+    print(&apos;connected!&apos;)
+
+selector.register(sock.fileno(), EVENT_WRITE, connected)
+</code></pre><p>我们忽略掉那个虚假的错误，调用<code>selector.register</code>，传入socket的文件描述符和一个表示我们正在等待的事件的常量。为了在连接成功建立时是收到通知，我们传入<code>EVENT_WRITE</code>：即我们想知道socker什么时候处于可以写入的状态。同时，我们也传入了一个Python函数<code>connected</code>，它会在事件发生的时候运行。这个函数就是所谓的回调函数。</p>
+<p>通过一个循环，我们在选择器收到I/O通知的时候处理它们。</p>
+<pre><code>def loop():
+    while True:
+        events = selector.select()
+        for event_key, event_mask in events:
+            callback = event_key.data
+            callback()
+</code></pre><h1 id="用回调函数编程"><a href="#用回调函数编程" class="headerlink" title="用回调函数编程"></a>用回调函数编程</h1><p><strong>Programming With Callbacks</strong></p>
 <h1 id="协程"><a href="#协程" class="headerlink" title="协程"></a>协程</h1><p><strong>Coroutines</strong></p>
 <h1 id="Python-生成器的工作原理"><a href="#Python-生成器的工作原理" class="headerlink" title="Python 生成器的工作原理"></a>Python 生成器的工作原理</h1><p><strong>How Python Generators Work</strong></p>
 
@@ -725,7 +750,7 @@ print(&apos;sent&apos;)
     
       <span class="post-meta-item-text">Site words total count&#58;</span>
     
-    <span title="Site words total count">10.7k</span>
+    <span title="Site words total count">11.0k</span>
   
 </div>
 
