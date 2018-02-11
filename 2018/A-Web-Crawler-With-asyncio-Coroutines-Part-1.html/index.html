@@ -126,7 +126,7 @@
 <meta property="og:site_name" content="洋溢着温暖的微笑">
 <meta property="og:description" content="这是来自开源书籍500 Lines or Less中A Web Crawler With asyncio Coroutines一节的翻译。手翻略水，以原文为准。 A Web Crawler With asyncio Coroutines - A. Jesse Jiryu Davis and Guido van Rossum">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2018-02-09T17:07:46.062Z">
+<meta property="og:updated_time" content="2018-02-11T08:52:57.400Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="搬运 | 500 Lines or Less 基于Python协程的网页爬虫 （一） [施工中...]">
 <meta name="twitter:description" content="这是来自开源书籍500 Lines or Less中A Web Crawler With asyncio Coroutines一节的翻译。手翻略水，以原文为准。 A Web Crawler With asyncio Coroutines - A. Jesse Jiryu Davis and Guido van Rossum">
@@ -386,7 +386,7 @@
                   <span class="post-meta-item-text">字数统计&#58;</span>
                 
                 <span title="字数统计">
-                  2,078
+                  2,300
                 </span>
               
 
@@ -485,7 +485,7 @@ def connected():
     print(&apos;connected!&apos;)
 
 selector.register(sock.fileno(), EVENT_WRITE, connected)
-</code></pre><p>我们忽略掉那个虚假的错误，调用<code>selector.register</code>，传入socket的文件描述符和一个表示我们正在等待的事件的常量。为了在连接成功建立时是收到通知，我们传入<code>EVENT_WRITE</code>：即我们想知道socker什么时候处于可以写入的状态。同时，我们也传入了一个Python函数<code>connected</code>，它会在事件发生的时候运行。这个函数就是所谓的回调函数。</p>
+</code></pre><p>我们忽略掉那个虚假的错误，调用<code>selector.register</code>，传入socket的文件描述符和一个表示我们正在等待的事件的常量。为了在连接成功建立时是收到通知，我们传入<code>EVENT_WRITE</code>：即我们想知道socker什么时候处于可以写入的状态。同时，我们也传入了一个Python函数<code>connected</code>，它会在事件发生的时候运行。这个函数就是所谓的回调。</p>
 <p>通过一个循环，我们在选择器收到I/O通知的时候处理它们。</p>
 <pre><code>def loop():
     while True:
@@ -493,7 +493,11 @@ selector.register(sock.fileno(), EVENT_WRITE, connected)
         for event_key, event_mask in events:
             callback = event_key.data
             callback()
-</code></pre><h1 id="用回调函数编程"><a href="#用回调函数编程" class="headerlink" title="用回调函数编程"></a>用回调函数编程</h1><p><strong>Programming With Callbacks</strong></p>
+</code></pre><p><code>connected</code>的存储形式是<code>event_key.data</code>，我们会在非阻塞socket连接成功时第一时间执行它。</p>
+<p>与我们上面的简单（暴力？）循环不同，这里调用<code>select</code>的时候会暂停，等待下一个I/O事件。然后循环运行回调来等待这些事件。在收到事件循环的某个时间点之前，操作会保持挂起。</p>
+<p>我们已经说明了什么？我们展示了当（连接）操作就绪时如何开始一个操作和执行一个回调。一个异步框架基于我们刚才所说的两种特性构建：非阻塞socket和事件循环——在一个线程上实现并发操作。</p>
+<p>我们在这里已经实现了“并发”，但不是传统上说的“并发性”。也就是说，我们构建了一个可以进行重叠I/O的小系统。</p>
+<h1 id="用回调函数编程"><a href="#用回调函数编程" class="headerlink" title="用回调函数编程"></a>用回调函数编程</h1><p><strong>Programming With Callbacks</strong></p>
 <h1 id="协程"><a href="#协程" class="headerlink" title="协程"></a>协程</h1><p><strong>Coroutines</strong></p>
 <h1 id="Python-生成器的工作原理"><a href="#Python-生成器的工作原理" class="headerlink" title="Python 生成器的工作原理"></a>Python 生成器的工作原理</h1><p><strong>How Python Generators Work</strong></p>
 
@@ -750,7 +754,7 @@ selector.register(sock.fileno(), EVENT_WRITE, connected)
     
       <span class="post-meta-item-text">Site words total count&#58;</span>
     
-    <span title="Site words total count">11.0k</span>
+    <span title="Site words total count">11.2k</span>
   
 </div>
 
