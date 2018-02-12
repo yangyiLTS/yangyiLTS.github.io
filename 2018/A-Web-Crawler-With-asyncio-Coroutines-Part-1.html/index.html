@@ -126,10 +126,12 @@
 <meta property="og:site_name" content="洋溢着温暖的微笑">
 <meta property="og:description" content="这是来自开源书籍500 Lines or Less中A Web Crawler With asyncio Coroutines一节的翻译。手翻略水，以原文为准。 A Web Crawler With asyncio Coroutines - A. Jesse Jiryu Davis and Guido van Rossum">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2018-02-12T10:36:00.115Z">
+<meta property="og:image" content="https://picbucket-1253466787.image.myqcloud.com/2018.2/function-calls.png">
+<meta property="og:updated_time" content="2018-02-12T15:52:24.234Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="搬运 | 500 Lines or Less 基于Python协程的网页爬虫 （一） [施工中...]">
 <meta name="twitter:description" content="这是来自开源书籍500 Lines or Less中A Web Crawler With asyncio Coroutines一节的翻译。手翻略水，以原文为准。 A Web Crawler With asyncio Coroutines - A. Jesse Jiryu Davis and Guido van Rossum">
+<meta name="twitter:image" content="https://picbucket-1253466787.image.myqcloud.com/2018.2/function-calls.png">
 
 
 
@@ -386,7 +388,7 @@
                   <span class="post-meta-item-text">字数统计&#58;</span>
                 
                 <span title="字数统计">
-                  3,861
+                  5,419
                 </span>
               
 
@@ -599,9 +601,67 @@ def fetch(url):
     # Page is now downloaded.
     links = parse_links(response)
     q.add(links)
-</code></pre><p>在一个socket操作和下一个之间，这个函数会保存什么状态呢？它有socket，URL以及累积接收的响应。</p>
+</code></pre><p>在一个socket操作和下一个之间，这个函数会保存什么状态呢？它有socket，URL以及累积接收的响应。在线程上运行的函数使用编程语言的基本特性，把临时状态存储在其栈中的局部变量中。这种函数还有“附加部分”，也就是，在I/O完成的时候将要执行的代码。运行时，程序通过存储线程的指令指针来识别函数的“附加部分”。你不需要在I/O之后考虑恢复这些局部变量以及函数的附加部分。这是建立在语言的基础上的。</p>
+<p>但是在基于回掉函数的异步框架中，这些语言特性没有任何的帮助。在等待I/O的过程中，函数必须显式地保存它的状态，因为函数会在I/O操作完成之前返回并且丢失栈区的内容。在替代回调函数的情况下，我们基于回调函数的实例把<code>sock</code>和<code>response</code>存储为<code>self</code>的属性，属于Fetcher实例。为了替代指令指针，它通过注册<code>connected</code>和<code>read_response</code>回调函数来保存它的附加部分。随着应用程序复杂性的增加，我们需要在回调中手动保存的回调函数的状态复杂性也在增加。这种复杂的记法然程序员头痛。</p>
+<p>更糟糕的是，如果回调函数在调用下一个回调函数之前抛出一个异常，会发生什么？如果我们的<code>parse_links</code>方法写的不够完善，它会在解析HTML的时候抛出这些异常：</p>
+<pre><code>Traceback (most recent call last):
+  File &quot;loop-with-callbacks.py&quot;, line 111, in &lt;module&gt;
+    loop()
+  File &quot;loop-with-callbacks.py&quot;, line 106, in loop
+    callback(event_key, event_mask)
+  File &quot;loop-with-callbacks.py&quot;, line 51, in read_response
+    links = self.parse_links()
+  File &quot;loop-with-callbacks.py&quot;, line 67, in parse_links
+    raise Exception(&apos;parse error&apos;)
+Exception: parse error
+</code></pre><p>堆栈跟踪只显示事件循环正在运行一个回调函数，我们并不知道什么导致了错误。链条在两端都断了，我们忘记了从哪里来，到哪里去？这种上下文的丢失我们称之为“堆栈翻录”，在许多情况下，它会干扰我们的调试。堆栈翻录还会阻止我们为回调函数链条添加一个异常处理语段，”try / except”封装的函数调用和它的后代树。</p>
+<p>所以，除了关于多线程和异步I/O之间有着长时间的争论，还有另一个争论关于哪一种方法跟容易出错。如果你是在同步它们的时候出错，那么多线程更容易导致数据争用，而回调函数则会因为堆栈翻录而更难以调试。</p>
 <h1 id="协程"><a href="#协程" class="headerlink" title="协程"></a>协程</h1><p><strong>Coroutines</strong></p>
+<p>我们曾经许下诺言。可以编写异步代码使得更有效率的回调函数和多线程编程的经典外观结合起来。这种组合是通过一中叫“协程”的模式实现的。使用Python 3.4标准库asyncio，以及另一个叫aiohttp的库，可以很直接的在协程中抓取一个URL。</p>
+<pre><code>@asyncio.coroutine
+def fetch(self, url):
+    response = yield from self.session.get(url)
+    body = yield from response.read()
+</code></pre><p>这种方法也是可扩展的。相比每个线程50kb的内存开销和操作系统对线程严格的限制，一个运行在Jesse系统上的Python协程只需要很少的3kb内存。Python可以轻而易举地启动成千上万个协程。</p>
+<p>协程的概念，可以追溯到计算机科学发展早期，很简单：协程是一种可以暂停和恢复的子程序。不同于线程是由操作系统管理的抢占式多任务处理，协程是协同时多任务处理：它们自己选择何时暂停，以及接下来运行哪一个协程。</p>
+<p>协程的具体实现有很多，即使是Python中也有好几个。Python 3.4标准库”asyncio”中的协程实现是由生成器，Future类，以及”yield from”语句构成。<br>从Python3.5开始，协程成为Python语言的一个原生特征。然而，理解协程在Python 3.4中使用已经存在的语言工具的实现过程，是使用Python 3.5中原生支持的协程的基础。</p>
+<p>为了解释Python 3.4中基于生成器的协程实现，我们将参与一个关于生成器的阐述，以及它们是如何在asynico库中实现协程的，相信你会像我们享受编写的过程一下享受阅读的过程。当我们解释清楚了基于生成器的协程是如何实现的，我们就可以把它用于我们的异步web爬虫中。</p>
 <h1 id="Python-生成器的工作原理"><a href="#Python-生成器的工作原理" class="headerlink" title="Python 生成器的工作原理"></a>Python 生成器的工作原理</h1><p><strong>How Python Generators Work</strong></p>
+<p>在你理解Python的协程之前，你必须先明白Python常规函数是如何工作的。通常情况下，当Python函数调用一个子程序，子程序会持有控制权直到它返回，或者抛出一个异常。然后控制权交还给它的调用者。</p>
+<pre><code>&gt;&gt;&gt; def foo():
+...     bar()
+...
+&gt;&gt;&gt; def bar():
+...     pass
+</code></pre><p>标准的Python解释器使用C语言编写的，当执行一个Python函数的C函数被称为<code>PyEval_EvalFrameEx</code>。它接受一个Python堆栈帧对象，在框架的上下文中评估Python的字节码。这是<code>foo</code>的字节码：</p>
+<pre><code>&gt;&gt;&gt; import dis
+&gt;&gt;&gt; dis.dis(foo)
+  2           0 LOAD_GLOBAL              0 (bar)
+              3 CALL_FUNCTION            0 (0 positional, 0 keyword pair)
+              6 POP_TOP
+              7 LOAD_CONST               0 (None)
+             10 RETURN_VALUE
+</code></pre><p><code>foo</code>函数把<code>bar</code>加载到它的栈空间中然后调用它，然后从堆栈中弹出它的返回值，加载<code>None</code>到栈顶，然后返回<code>None</code>。</p>
+<p>当<code>PyEval_EvalFrameEx</code>遇到<code>CALL_FUNCTION</code>字节码时，它创建一个新的Python堆栈帧并递归：也就是说，它在新的帧上递归地调用<code>PyEval_EvalFrameEx</code>，用于执行<code>bar</code>。</p>
+<p>理解Python堆栈帧在堆内存中的分配方式非常重要！Python解释器是一个普通的C程序，所以堆栈帧也是普通的堆栈帧。但是它操纵的堆栈帧在堆上。除去特殊的情况，它意味着Python的堆栈帧比它的函数调用更有效。为了看到这种交互，我们在<code>bar</code>中保存当前的帧：</p>
+<pre><code>&gt;&gt;&gt; import inspect
+&gt;&gt;&gt; frame = None
+&gt;&gt;&gt; def foo():
+...     bar()
+...
+&gt;&gt;&gt; def bar():
+...     global frame
+...     frame = inspect.currentframe()
+...
+&gt;&gt;&gt; foo()
+&gt;&gt;&gt; # The frame was executing the code for &apos;bar&apos;.
+&gt;&gt;&gt; frame.f_code.co_name
+&apos;bar&apos;
+&gt;&gt;&gt; # Its back pointer refers to the frame for &apos;foo&apos;.
+&gt;&gt;&gt; caller_frame = frame.f_back
+&gt;&gt;&gt; caller_frame.f_code.co_name
+&apos;foo&apos;
+</code></pre><p><img src="https://picbucket-1253466787.image.myqcloud.com/2018.2/function-calls.png" alt="" title="图5.1 - 函数调用"></p>
 
       
     </div>
@@ -856,7 +916,7 @@ def fetch(url):
     
       <span class="post-meta-item-text">Site words total count&#58;</span>
     
-    <span title="Site words total count">12.8k</span>
+    <span title="Site words total count">14.4k</span>
   
 </div>
 
