@@ -127,8 +127,8 @@
 <meta property="og:description" content="翻译自开源书籍500 Lines or Less中A Web Crawler With asyncio Coroutines一节。手翻略水，以原文为准。 A Web Crawler With asyncio Coroutines - A. Jesse Jiryu Davis and Guido van Rossum">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="https://picbucket-1253466787.image.myqcloud.com/2018.2/function-calls.png">
-<meta property="og:image" content="https://picbucket-1253466787.image.myqcloud.com/2018.2/generators.png">
-<meta property="og:updated_time" content="2018-02-12T16:53:55.078Z">
+<meta property="og:image" content="https://picbucket-1253466787.image.myqcloud.com/2018.2/generator.png">
+<meta property="og:updated_time" content="2018-02-12T17:11:08.703Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="翻译 | 500 Lines or Less 基于Python协程的网页爬虫 （一） [施工中...]">
 <meta name="twitter:description" content="翻译自开源书籍500 Lines or Less中A Web Crawler With asyncio Coroutines一节。手翻略水，以原文为准。 A Web Crawler With asyncio Coroutines - A. Jesse Jiryu Davis and Guido van Rossum">
@@ -389,7 +389,7 @@
                   <span class="post-meta-item-text">字数统计&#58;</span>
                 
                 <span title="字数统计">
-                  6,084
+                  6,297
                 </span>
               
 
@@ -428,21 +428,8 @@
 <p>我们可以通过同时下载多个页面来加速这个进程。当爬虫找到新的链接时，它会在不同的socket上同时为新的页面启动抓取操作。它在http响应到达时解析它们，并且把新的链接加入到队列中。过多并发请求带来的性能下降可能会导致最终的效能降低，所以我们限制了并发请求的数量，把剩余的链接放在队列里面知道某些正在进行的请求完成。</p>
 <h1 id="传统实现"><a href="#传统实现" class="headerlink" title="传统实现"></a>传统实现</h1><p><strong>The Traditional Approach</strong></p>
 <p>如何让我们的爬虫并发处理请求呢？传统上我们会创建一个线程池。每一个线程负责在一socket上下载一个页面。例如，从<code>xkcd.com</code>下载一个页面：</p>
-<pre><code>def fetch(url):
-    sock = socket.socket()
-    sock.connect((&apos;xkcd.com&apos;, 80))
-    request = &apos;GET {} HTTP/1.0\r\nHost: xkcd.com\r\n\r\n&apos;.format(url)
-    sock.send(request.encode(&apos;ascii&apos;))
-    response = b&apos;&apos;
-    chunk = sock.recv(4096)
-    while chunk:
-        response += chunk
-        chunk = sock.recv(4096)
-
-    # Page is now downloaded.
-    links = parse_links(response)
-    q.add(links)
-</code></pre><p>在默认状态下，socket操作是<em>阻塞的</em>：当线程调用一个方法例如<code>connect</code>或<code>recv</code>时，线程会暂停直到上面的操作完成<sup>[2]</sup>。因此，为了下载大量的页面，我们需要许多的线程。一个精巧的应用程序通过保持线程池中的空闲进程来控制创建进程所需要的系统花销，然后将它们检出以重复用于后续的任务，它就像管理sockets的连接池一样工作。</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">fetch</span><span class="params">(url)</span>:</span></span><br><span class="line">    sock = socket.socket()</span><br><span class="line">    sock.connect((<span class="string">'xkcd.com'</span>, <span class="number">80</span>))</span><br><span class="line">    request = <span class="string">'GET &#123;&#125; HTTP/1.0\r\nHost: xkcd.com\r\n\r\n'</span>.format(url)</span><br><span class="line">    sock.send(request.encode(<span class="string">'ascii'</span>))</span><br><span class="line">    response = <span class="string">b''</span></span><br><span class="line">    chunk = sock.recv(<span class="number">4096</span>)</span><br><span class="line">    <span class="keyword">while</span> chunk:</span><br><span class="line">        response += chunk</span><br><span class="line">        chunk = sock.recv(<span class="number">4096</span>)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># Page is now downloaded.</span></span><br><span class="line">    links = parse_links(response)</span><br><span class="line">    q.add(links)</span><br></pre></td></tr></table></figure>
+<p>在默认状态下，socket操作是<em>阻塞的</em>：当线程调用一个方法例如<code>connect</code>或<code>recv</code>时，线程会暂停直到上面的操作完成<sup>[2]</sup>。因此，为了下载大量的页面，我们需要许多的线程。一个精巧的应用程序通过保持线程池中的空闲进程来控制创建进程所需要的系统花销，然后将它们检出以重复用于后续的任务，它就像管理sockets的连接池一样工作。</p>
 <p>然而，线程会带来较大的系统开销，而且操作系统会对进程，用户或处理器可以拥有的线程数量有着各种各样严格的限制。在jesse的系统上，一个Python线程会占用大约50k的内存，而且启动数万个进程时会失败。如果我们在并发套接字上扩展到数万个并发操作，会在socket资源耗尽前耗尽线程资源。对线程来说，线程本身的开销和系统限制都是瓶颈。</p>
 <p>Dan Kegel在”The C10K problem”<sup>[3]</sup>中指出了多线程并发I/O的局限性。他说：</p>
 <blockquote>
@@ -451,52 +438,17 @@
 <p>Kegel撰写”C10K”的时候是1999年。一万个连接在今天听起来不多，问题的规模已经发生了变化，本质还是不变的。在之前，给每一个连接分配一个线程是不现实的。现在的容量相比过去已经提高了好几个数量级。的确，我们的小爬虫可以在多线程的情况下很好地工作。但对于有着成千上万个连接的大规模应用程序来说，这个限制仍然是：大多数系统仍然可以创建socket，但是线程已经耗光了。如何克服这个问题呢？</p>
 <h1 id="异步I-O"><a href="#异步I-O" class="headerlink" title="异步I/O"></a>异步I/O</h1><p><strong>Async</strong></p>
 <p>异步I/O使用非阻塞socket在单个线程上实现并发操作。回到我们的异步爬虫，在开始连接到服务器之前，我们先把socket设置为非阻塞：</p>
-<pre><code>sock = socket.socket()
-sock.setblocking(False)
-try:
-    sock.connect((&apos;xkcd.com&apos;, 80))
-except BlockingIOError:
-    pass
-</code></pre><p>令人恼火的是，非阻塞socket会在<code>connect</code>的过程中抛出一个异常，即使它的工作是正常的。这个异常复制了底层C函数的恼人行为，它会将<code>errno</code>设置为<code>EINPROGRESS</code>来告诉你它已经开始了。</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">sock = socket.socket()</span><br><span class="line">sock.setblocking(<span class="keyword">False</span>)</span><br><span class="line"><span class="keyword">try</span>:</span><br><span class="line">    sock.connect((<span class="string">'xkcd.com'</span>, <span class="number">80</span>))</span><br><span class="line"><span class="keyword">except</span> BlockingIOError:</span><br><span class="line">    <span class="keyword">pass</span></span><br></pre></td></tr></table></figure>
+<p>令人恼火的是，非阻塞socket会在<code>connect</code>的过程中抛出一个异常，即使它的工作是正常的。这个异常复制了底层C函数的恼人行为，它会将<code>errno</code>设置为<code>EINPROGRESS</code>来告诉你它已经开始了。</p>
 <p>现在，我们的爬虫需要一个方法来知道连接何时成功建立，然后它就可以发送HTTP请求。我们可以通过一个循环简单实现：</p>
-<pre><code>request = &apos;GET {} HTTP/1.0\r\nHost: xkcd.com\r\n\r\n&apos;.format(url)
-encoded = request.encode(&apos;ascii&apos;)
-
-while True:
-    try:
-        sock.send(encoded)
-        break  # Done.
-    except OSError as e:
-        pass
-
-print(&apos;sent&apos;)
-</code></pre><p>但是这个方法不仅浪费资源，而且不能有效地在使用多个socket的时候等待事件。在以前，BSD Unix对于这个问题的解决方案是使用<code>select</code>，一个等待事件发生在非阻塞socket或小数组上的C函数。如今，拥有大量连接的网络应用程序催生了类似于<code>poll</code>（轮询）的解决方案，例如BSD上的<code>kqueue</code>，和Linux上的<code>epoll</code>。这些API跟<code>select</code>很相似，而且在大量连接的使用场景下有着出色的表现。</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">request = <span class="string">'GET &#123;&#125; HTTP/1.0\r\nHost: xkcd.com\r\n\r\n'</span>.format(url)</span><br><span class="line">encoded = request.encode(<span class="string">'ascii'</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">while</span> <span class="keyword">True</span>:</span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        sock.send(encoded)</span><br><span class="line">        <span class="keyword">break</span>  <span class="comment"># Done.</span></span><br><span class="line">    <span class="keyword">except</span> OSError <span class="keyword">as</span> e:</span><br><span class="line">        <span class="keyword">pass</span></span><br><span class="line"></span><br><span class="line">print(<span class="string">'sent'</span>)</span><br></pre></td></tr></table></figure>
+<p>但是这个方法不仅浪费资源，而且不能有效地在使用多个socket的时候等待事件。在以前，BSD Unix对于这个问题的解决方案是使用<code>select</code>，一个等待事件发生在非阻塞socket或小数组上的C函数。如今，拥有大量连接的网络应用程序催生了类似于<code>poll</code>（轮询）的解决方案，例如BSD上的<code>kqueue</code>，和Linux上的<code>epoll</code>。这些API跟<code>select</code>很相似，而且在大量连接的使用场景下有着出色的表现。</p>
 <p>Python 3.4的<code>DefaultSelector</code>会调用系统上与<code>select</code>最相似的函数。为了注册关于网络I/O的通知，我们创建一个非阻塞socket并用默认选择器：</p>
-<pre><code>from selectors import DefaultSelector, EVENT_WRITE
-
-selector = DefaultSelector()
-
-sock = socket.socket()
-sock.setblocking(False)
-try:
-    sock.connect((&apos;xkcd.com&apos;, 80))
-except BlockingIOError:
-    pass
-
-def connected():
-    selector.unregister(sock.fileno())
-    print(&apos;connected!&apos;)
-
-selector.register(sock.fileno(), EVENT_WRITE, connected)
-</code></pre><p>我们忽略掉那个虚假的错误，调用<code>selector.register</code>，传入socket的文件描述符和一个表示我们正在等待的事件的常量。为了在连接成功建立时是收到通知，我们传入<code>EVENT_WRITE</code>：即我们想知道socker什么时候处于可以写入的状态。同时，我们也传入了一个Python函数<code>connected</code>，它会在事件发生的时候运行。这个函数就是所谓的回调。</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> selectors <span class="keyword">import</span> DefaultSelector, EVENT_WRITE</span><br><span class="line"></span><br><span class="line">selector = DefaultSelector()</span><br><span class="line"></span><br><span class="line">sock = socket.socket()</span><br><span class="line">sock.setblocking(<span class="keyword">False</span>)</span><br><span class="line"><span class="keyword">try</span>:</span><br><span class="line">    sock.connect((<span class="string">'xkcd.com'</span>, <span class="number">80</span>))</span><br><span class="line"><span class="keyword">except</span> BlockingIOError:</span><br><span class="line">    <span class="keyword">pass</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">connected</span><span class="params">()</span>:</span></span><br><span class="line">    selector.unregister(sock.fileno())</span><br><span class="line">    print(<span class="string">'connected!'</span>)</span><br><span class="line"></span><br><span class="line">selector.register(sock.fileno(), EVENT_WRITE, connected)</span><br></pre></td></tr></table></figure>
+<p>我们忽略掉那个虚假的错误，调用<code>selector.register</code>，传入socket的文件描述符和一个表示我们正在等待的事件的常量。为了在连接成功建立时是收到通知，我们传入<code>EVENT_WRITE</code>：即我们想知道socker什么时候处于可以写入的状态。同时，我们也传入了一个Python函数<code>connected</code>，它会在事件发生的时候运行。这个函数就是所谓的回调。</p>
 <p>通过一个循环，我们在选择器收到I/O通知的时候处理它们。</p>
-<pre><code>def loop():
-    while True:
-        events = selector.select()
-        for event_key, event_mask in events:
-            callback = event_key.data
-            callback()
-</code></pre><p><code>connected</code>的存储形式是<code>event_key.data</code>，我们会在非阻塞socket连接成功时第一时间执行它。</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">loop</span><span class="params">()</span>:</span></span><br><span class="line">    <span class="keyword">while</span> <span class="keyword">True</span>:</span><br><span class="line">        events = selector.select()</span><br><span class="line">        <span class="keyword">for</span> event_key, event_mask <span class="keyword">in</span> events:</span><br><span class="line">            callback = event_key.data</span><br><span class="line">            callback()</span><br></pre></td></tr></table></figure>
+<p><code>connected</code>的存储形式是<code>event_key.data</code>，我们会在非阻塞socket连接成功时第一时间执行它。</p>
 <p>与我们上面的简单（暴力？）循环不同，这里调用<code>select</code>的时候会暂停，等待下一个I/O事件。然后循环运行回调来等待这些事件。在收到事件循环的某个时间点之前，操作会保持挂起。</p>
 <p>我们已经说明了什么？我们展示了当（连接）操作就绪时如何开始一个操作和执行一个回调。一个异步框架基于我们刚才所说的两种特性构建：非阻塞socket和事件循环——在一个线程上实现并发操作。</p>
 <p>我们在这里已经实现了“并发”，但不是传统上说的“并发性”。也就是说，我们构建了一个可以进行重叠I/O的小系统。它有能力在其它操作正在进行的时候开始新的操作。它实际上并不是使用多个cpu核心来进行并行计算。但是，这种系统适用于I/O密集型问题，而不是CPU密集型问题。</p>
@@ -504,215 +456,78 @@ selector.register(sock.fileno(), EVENT_WRITE, connected)
 <h1 id="用回调函数编程"><a href="#用回调函数编程" class="headerlink" title="用回调函数编程"></a>用回调函数编程</h1><p><strong>Programming With Callbacks</strong></p>
 <p>到目前为止，我们已经建立起了简单的异步框架，那么如何编写一个web爬虫呢？即使编写一个简单URL爬取器也是痛苦的。</p>
 <p>我们从存放已经爬取过的URL和看到的URL的两个set开始。<em>（set：没有value的dict）</em></p>
-<pre><code>urls_todo = set([&apos;/&apos;])
-seen_urls = set([&apos;/&apos;])
-</code></pre><p>set<code>seen_urls</code>包含<code>urls_todo</code>的所有URL以及已经完成的URL。这两个set初始化时都包含根URL”/“。</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">urls_todo = set([<span class="string">'/'</span>])</span><br><span class="line">seen_urls = set([<span class="string">'/'</span>])</span><br></pre></td></tr></table></figure>
+<p>set<code>seen_urls</code>包含<code>urls_todo</code>的所有URL以及已经完成的URL。这两个set初始化时都包含根URL”/“。</p>
 <p>爬取一个页面需要一系列的回调函数。当socket连接时会触发<code>connected</code>回调函数，然后给服务器发送一个GET请求。之后，它必须等待服务器的应答，所以它拉起另外一个回调函数。如果，在回调函数触发时，它不能读取全部的服务器响应，它会再次注册，以此类推。</p>
 <p>我们把这些回调放在在<code>Fetcher</code>对象里。需要包含一个URL，一个sokcet对象，以及一个存放字节型响应的变量。</p>
-<pre><code>class Fetcher:
-    def __init__(self, url):
-        self.response = b&apos;&apos;  # Empty array of bytes.
-        self.url = url
-        self.sock = None
-</code></pre><p>从<code>Fetcher.fetch</code>方法开始：</p>
-<pre><code># Method on Fetcher class.
-def fetch(self):
-    self.sock = socket.socket()
-    self.sock.setblocking(False)
-    try:
-        self.sock.connect((&apos;xkcd.com&apos;, 80))
-    except BlockingIOError:
-        pass
-
-    # Register next callback.
-    selector.register(self.sock.fileno(),
-                      EVENT_WRITE,
-                      self.connected)
-</code></pre><p><code>fetch</code>方法从连接一个socket开始。但是要注意这个方法会在连接建立之前返回。它必须返回反正时间循环的控制以等待连接。为了理解原因，想象我们整个应用程序的结构是这样的：</p>
-<pre><code># Begin fetching http://xkcd.com/353/
-fetcher = Fetcher(&apos;/353/&apos;)
-fetcher.fetch()
-
-while True:
-    events = selector.select()
-    for event_key, event_mask in events:
-        callback = event_key.data
-        callback(event_key, event_mask)
-</code></pre><p>当<code>select</code>被调用时，事件循环会处理所有的事件通知。因此<code>fetch</code>必须手动控制事件循环，以便程序知道socket何时建立连接。只有这样，循环才会运行<code>connected</code>回调函数，这个回调函数是在<code>fetch</code>的结尾被注册的。</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Fetcher</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, url)</span>:</span></span><br><span class="line">        self.response = <span class="string">b''</span>  <span class="comment"># Empty array of bytes.</span></span><br><span class="line">        self.url = url</span><br><span class="line">        self.sock = <span class="keyword">None</span></span><br></pre></td></tr></table></figure>
+<p>从<code>Fetcher.fetch</code>方法开始：</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Method on Fetcher class.</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">fetch</span><span class="params">(self)</span>:</span></span><br><span class="line">    self.sock = socket.socket()</span><br><span class="line">    self.sock.setblocking(<span class="keyword">False</span>)</span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        self.sock.connect((<span class="string">'xkcd.com'</span>, <span class="number">80</span>))</span><br><span class="line">    <span class="keyword">except</span> BlockingIOError:</span><br><span class="line">        <span class="keyword">pass</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># Register next callback.</span></span><br><span class="line">    selector.register(self.sock.fileno(),</span><br><span class="line">                      EVENT_WRITE,</span><br><span class="line">                      self.connected)</span><br></pre></td></tr></table></figure>
+<p><code>fetch</code>方法从连接一个socket开始。但是要注意这个方法会在连接建立之前返回。它必须返回反正时间循环的控制以等待连接。为了理解原因，想象我们整个应用程序的结构是这样的：</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Begin fetching http://xkcd.com/353/</span></span><br><span class="line">fetcher = Fetcher(<span class="string">'/353/'</span>)</span><br><span class="line">fetcher.fetch()</span><br><span class="line"></span><br><span class="line"><span class="keyword">while</span> <span class="keyword">True</span>:</span><br><span class="line">    events = selector.select()</span><br><span class="line">    <span class="keyword">for</span> event_key, event_mask <span class="keyword">in</span> events:</span><br><span class="line">        callback = event_key.data</span><br><span class="line">        callback(event_key, event_mask)</span><br></pre></td></tr></table></figure>
+<p>当<code>select</code>被调用时，事件循环会处理所有的事件通知。因此<code>fetch</code>必须手动控制事件循环，以便程序知道socket何时建立连接。只有这样，循环才会运行<code>connected</code>回调函数，这个回调函数是在<code>fetch</code>的结尾被注册的。</p>
 <p>下面是<code>connected</code>的实现。</p>
-<pre><code># Method on Fetcher class.
-def connected(self, key, mask):
-    print(&apos;connected!&apos;)
-    selector.unregister(key.fd)
-    request = &apos;GET {} HTTP/1.0\r\nHost: xkcd.com\r\n\r\n&apos;.format(self.url)
-    self.sock.send(request.encode(&apos;ascii&apos;))
-
-    # Register the next callback.
-    selector.register(key.fd,
-                      EVENT_READ,
-                      self.read_response)
-</code></pre><p>这个方法发送了一个GET请求。一个实际的应用程序会检测<code>send</code>的返回值，以防整个请求没有第一时间发送。但是我们的请求比较小，程序也不发杂。可以没有顾忌地调用<code>send</code>，然后等待响应。当然，它必须注册了下一个回调函数，并且将控制权交给了事件循环。下一个也是最后一个回调函数<code>read_response</code>，用于处理服务器的响应。</p>
-<pre><code># Method on Fetcher class.
-def read_response(self, key, mask):
-    global stopped
-
-    chunk = self.sock.recv(4096)  # 4k chunk size.
-    if chunk:
-        self.response += chunk
-    else:
-        selector.unregister(key.fd)  # Done reading.
-        links = self.parse_links()
-
-        # Python set-logic:
-        for link in links.difference(seen_urls):
-            urls_todo.add(link)
-            Fetcher(link).fetch()  # &lt;- New Fetcher.
-
-        seen_urls.update(links)
-        urls_todo.remove(self.url)
-        if not urls_todo:
-            stopped = True
-</code></pre><p>当selector发现socket是可读的时候，它便会执行这一个回掉函数。socket可读意味着，socket里面有数据并且已经关闭。</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Method on Fetcher class.</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">connected</span><span class="params">(self, key, mask)</span>:</span></span><br><span class="line">    print(<span class="string">'connected!'</span>)</span><br><span class="line">    selector.unregister(key.fd)</span><br><span class="line">    request = <span class="string">'GET &#123;&#125; HTTP/1.0\r\nHost: xkcd.com\r\n\r\n'</span>.format(self.url)</span><br><span class="line">    self.sock.send(request.encode(<span class="string">'ascii'</span>))</span><br><span class="line"></span><br><span class="line">    <span class="comment"># Register the next callback.</span></span><br><span class="line">    selector.register(key.fd,</span><br><span class="line">                      EVENT_READ,</span><br><span class="line">                      self.read_response)</span><br></pre></td></tr></table></figure>
+<p>这个方法发送了一个GET请求。一个实际的应用程序会检测<code>send</code>的返回值，以防整个请求没有第一时间发送。但是我们的请求比较小，程序也不发杂。可以没有顾忌地调用<code>send</code>，然后等待响应。当然，它必须注册了下一个回调函数，并且将控制权交给了事件循环。下一个也是最后一个回调函数<code>read_response</code>，用于处理服务器的响应。</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Method on Fetcher class.</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">read_response</span><span class="params">(self, key, mask)</span>:</span></span><br><span class="line">    <span class="keyword">global</span> stopped</span><br><span class="line"></span><br><span class="line">    chunk = self.sock.recv(<span class="number">4096</span>)  <span class="comment"># 4k chunk size.</span></span><br><span class="line">    <span class="keyword">if</span> chunk:</span><br><span class="line">        self.response += chunk</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        selector.unregister(key.fd)  <span class="comment"># Done reading.</span></span><br><span class="line">        links = self.parse_links()</span><br><span class="line"></span><br><span class="line">        <span class="comment"># Python set-logic:</span></span><br><span class="line">        <span class="keyword">for</span> link <span class="keyword">in</span> links.difference(seen_urls):</span><br><span class="line">            urls_todo.add(link)</span><br><span class="line">            Fetcher(link).fetch()  <span class="comment"># &lt;- New Fetcher.</span></span><br><span class="line"></span><br><span class="line">        seen_urls.update(links)</span><br><span class="line">        urls_todo.remove(self.url)</span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">not</span> urls_todo:</span><br><span class="line">            stopped = <span class="keyword">True</span></span><br></pre></td></tr></table></figure>
+<p>当selector发现socket是可读的时候，它便会执行这一个回掉函数。socket可读意味着，socket里面有数据并且已经关闭。</p>
 <p>回调函数会从socket读取最多4kb的数据。如果数据少于4kb，<code>chunk</code>会存取所有可用的数据。如果大于4kb，<code>chunk</code>会读取4kb的数据，但这个时候socket仍然是可读状态，所以事件循环会在下一个周期再次运行这个回调函数。当响应处理完成，服务器会关闭连接并且socket和<code>chunk</code>都是空的。</p>
 <p><code>parse_links</code>方法没有给出，它返回一个存放URL的set。我们在每一个新的URL开始新的爬取器，并没有并发限制。注意异步编程中使用回掉函数的一个优点：我们不需要互斥地对共享数据进行存取，例如我们向<code>seec_urls</code>添加一个链接。这是非抢占式的多任务，所以我们不能在程序的任意点中断。</p>
 <p>我们添加一个全局变量<code>stopped</code>用于循环的控制：</p>
-<pre><code>stopped = False
-
-def loop():
-    while not stopped:
-        events = selector.select()
-        for event_key, event_mask in events:
-            callback = event_key.data
-            callback()
-</code></pre><p>当所有页面下载下载完成时，抓取器会停止，全局时间循环和程序都会退出。</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">stopped = <span class="keyword">False</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">loop</span><span class="params">()</span>:</span></span><br><span class="line">    <span class="keyword">while</span> <span class="keyword">not</span> stopped:</span><br><span class="line">        events = selector.select()</span><br><span class="line">        <span class="keyword">for</span> event_key, event_mask <span class="keyword">in</span> events:</span><br><span class="line">            callback = event_key.data</span><br><span class="line">            callback()</span><br></pre></td></tr></table></figure>
+<p>当所有页面下载下载完成时，抓取器会停止，全局时间循环和程序都会退出。</p>
 <p>这个例子清楚的说明了异步编程的问题：产生“面条式代码”。我们需要一种方式去表达一系列的计算和I/O操作，以及并发执行多个系列操作。但是在不使用多线程的情况下，一系列的操作不能用单个函数表达：当函数开始一个I/O操作时，它显式地保存它就将来所需的任何状态，然后返回。你要负责的是构思和编写这种状态保存代码。</p>
 <p>让我们来解释一下这是什么意思。考虑如何简单地在一个线程上使用常规的阻塞socket来抓取一个URL：</p>
-<pre><code># Blocking version.
-def fetch(url):
-    sock = socket.socket()
-    sock.connect((&apos;xkcd.com&apos;, 80))
-    request = &apos;GET {} HTTP/1.0\r\nHost: xkcd.com\r\n\r\n&apos;.format(url)
-    sock.send(request.encode(&apos;ascii&apos;))
-    response = b&apos;&apos;
-    chunk = sock.recv(4096)
-    while chunk:
-        response += chunk
-        chunk = sock.recv(4096)
-
-    # Page is now downloaded.
-    links = parse_links(response)
-    q.add(links)
-</code></pre><p>在一个socket操作和下一个之间，这个函数会保存什么状态呢？它有socket，URL以及累积接收的响应。在线程上运行的函数使用编程语言的基本特性，把临时状态存储在其栈中的局部变量中。这种函数还有“附加部分”，也就是，在I/O完成的时候将要执行的代码。运行时，程序通过存储线程的指令指针来识别函数的“附加部分”。你不需要在I/O之后考虑恢复这些局部变量以及函数的附加部分。这是建立在语言的基础上的。</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Blocking version.</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">fetch</span><span class="params">(url)</span>:</span></span><br><span class="line">    sock = socket.socket()</span><br><span class="line">    sock.connect((<span class="string">'xkcd.com'</span>, <span class="number">80</span>))</span><br><span class="line">    request = <span class="string">'GET &#123;&#125; HTTP/1.0\r\nHost: xkcd.com\r\n\r\n'</span>.format(url)</span><br><span class="line">    sock.send(request.encode(<span class="string">'ascii'</span>))</span><br><span class="line">    response = <span class="string">b''</span></span><br><span class="line">    chunk = sock.recv(<span class="number">4096</span>)</span><br><span class="line">    <span class="keyword">while</span> chunk:</span><br><span class="line">        response += chunk</span><br><span class="line">        chunk = sock.recv(<span class="number">4096</span>)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># Page is now downloaded.</span></span><br><span class="line">    links = parse_links(response)</span><br><span class="line">    q.add(links)</span><br></pre></td></tr></table></figure>
+<p>在一个socket操作和下一个之间，这个函数会保存什么状态呢？它有socket，URL以及累积接收的响应。在线程上运行的函数使用编程语言的基本特性，把临时状态存储在其栈中的局部变量中。这种函数还有“附加部分”，也就是，在I/O完成的时候将要执行的代码。运行时，程序通过存储线程的指令指针来识别函数的“附加部分”。你不需要在I/O之后考虑恢复这些局部变量以及函数的附加部分。这是建立在语言的基础上的。</p>
 <p>但是在基于回掉函数的异步框架中，这些语言特性没有任何的帮助。在等待I/O的过程中，函数必须显式地保存它的状态，因为函数会在I/O操作完成之前返回并且丢失栈区的内容。在替代回调函数的情况下，我们基于回调函数的实例把<code>sock</code>和<code>response</code>存储为<code>self</code>的属性，属于Fetcher实例。为了替代指令指针，它通过注册<code>connected</code>和<code>read_response</code>回调函数来保存它的附加部分。随着应用程序复杂性的增加，我们需要在回调中手动保存的回调函数的状态复杂性也在增加。这种复杂的记法然程序员头痛。</p>
 <p>更糟糕的是，如果回调函数在调用下一个回调函数之前抛出一个异常，会发生什么？如果我们的<code>parse_links</code>方法写的不够完善，它会在解析HTML的时候抛出这些异常：</p>
-<pre><code>Traceback (most recent call last):
-  File &quot;loop-with-callbacks.py&quot;, line 111, in &lt;module&gt;
-    loop()
-  File &quot;loop-with-callbacks.py&quot;, line 106, in loop
-    callback(event_key, event_mask)
-  File &quot;loop-with-callbacks.py&quot;, line 51, in read_response
-    links = self.parse_links()
-  File &quot;loop-with-callbacks.py&quot;, line 67, in parse_links
-    raise Exception(&apos;parse error&apos;)
-Exception: parse error
-</code></pre><p>堆栈跟踪只显示事件循环正在运行一个回调函数，我们并不知道什么导致了错误。链条在两端都断了，我们忘记了从哪里来，到哪里去？这种上下文的丢失我们称之为“堆栈翻录”，在许多情况下，它会干扰我们的调试。堆栈翻录还会阻止我们为回调函数链条添加一个异常处理语段，”try / except”封装的函数调用和它的后代树。</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">Traceback (most recent call last):</span><br><span class="line">  File <span class="string">"loop-with-callbacks.py"</span>, line <span class="number">111</span>, <span class="keyword">in</span> &lt;module&gt;</span><br><span class="line">    loop()</span><br><span class="line">  File <span class="string">"loop-with-callbacks.py"</span>, line <span class="number">106</span>, <span class="keyword">in</span> loop</span><br><span class="line">    callback(event_key, event_mask)</span><br><span class="line">  File <span class="string">"loop-with-callbacks.py"</span>, line <span class="number">51</span>, <span class="keyword">in</span> read_response</span><br><span class="line">    links = self.parse_links()</span><br><span class="line">  File <span class="string">"loop-with-callbacks.py"</span>, line <span class="number">67</span>, <span class="keyword">in</span> parse_links</span><br><span class="line">    <span class="keyword">raise</span> Exception(<span class="string">'parse error'</span>)</span><br><span class="line">Exception: parse error</span><br></pre></td></tr></table></figure>
+<p>堆栈跟踪只显示事件循环正在运行一个回调函数，我们并不知道什么导致了错误。链条在两端都断了，我们忘记了从哪里来，到哪里去？这种上下文的丢失我们称之为“堆栈翻录”，在许多情况下，它会干扰我们的调试。堆栈翻录还会阻止我们为回调函数链条添加一个异常处理语段，”try / except”封装的函数调用和它的后代树。</p>
 <p>所以，除了关于多线程和异步I/O之间有着长时间的争论，还有另一个争论关于哪一种方法跟容易出错。如果你是在同步它们的时候出错，那么多线程更容易导致数据争用，而回调函数则会因为堆栈翻录而更难以调试。</p>
 <h1 id="协程"><a href="#协程" class="headerlink" title="协程"></a>协程</h1><p><strong>Coroutines</strong></p>
 <p>我们曾经许下诺言。可以编写异步代码使得更有效率的回调函数和多线程编程的经典外观结合起来。这种组合是通过一中叫“协程”的模式实现的。使用Python 3.4标准库asyncio，以及另一个叫aiohttp的库，可以很直接的在协程中抓取一个URL。</p>
-<pre><code>@asyncio.coroutine
-def fetch(self, url):
-    response = yield from self.session.get(url)
-    body = yield from response.read()
-</code></pre><p>这种方法也是可扩展的。相比每个线程50kb的内存开销和操作系统对线程严格的限制，一个运行在Jesse系统上的Python协程只需要很少的3kb内存。Python可以轻而易举地启动成千上万个协程。</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@asyncio.coroutine</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">fetch</span><span class="params">(self, url)</span>:</span></span><br><span class="line">    response = <span class="keyword">yield</span> <span class="keyword">from</span> self.session.get(url)</span><br><span class="line">    body = <span class="keyword">yield</span> <span class="keyword">from</span> response.read()</span><br></pre></td></tr></table></figure>
+<p>这种方法也是可扩展的。相比每个线程50kb的内存开销和操作系统对线程严格的限制，一个运行在Jesse系统上的Python协程只需要很少的3kb内存。Python可以轻而易举地启动成千上万个协程。</p>
 <p>协程的概念，可以追溯到计算机科学发展早期，很简单：协程是一种可以暂停和恢复的子程序。不同于线程是由操作系统管理的抢占式多任务处理，协程是协同时多任务处理：它们自己选择何时暂停，以及接下来运行哪一个协程。</p>
 <p>协程的具体实现有很多，即使是Python中也有好几个。Python 3.4标准库”asyncio”中的协程实现是由生成器，Future类，以及”yield from”语句构成。<br>从Python3.5开始，协程成为Python语言的一个原生特征。然而，理解协程在Python 3.4中使用已经存在的语言工具的实现过程，是使用Python 3.5中原生支持的协程的基础。</p>
 <p>为了解释Python 3.4中基于生成器的协程实现，我们将参与一个关于生成器的阐述，以及它们是如何在asynico库中实现协程的，相信你会像我们享受编写的过程一下享受阅读的过程。当我们解释清楚了基于生成器的协程是如何实现的，我们就可以把它用于我们的异步web爬虫中。</p>
 <h1 id="Python-生成器的工作原理"><a href="#Python-生成器的工作原理" class="headerlink" title="Python 生成器的工作原理"></a>Python 生成器的工作原理</h1><p><strong>How Python Generators Work</strong></p>
 <p>在你理解Python的协程之前，你必须先明白Python常规函数是如何工作的。通常情况下，当Python函数调用一个子程序，子程序会持有控制权直到它返回，或者抛出一个异常。然后控制权交还给它的调用者。</p>
-<pre><code>&gt;&gt;&gt; def foo():
-...     bar()
-...
-&gt;&gt;&gt; def bar():
-...     pass
-</code></pre><p>标准的Python解释器使用C语言编写的，当执行一个Python函数的C函数被称为<code>PyEval_EvalFrameEx</code>。它接受一个Python堆栈帧对象，在框架的上下文中评估Python的字节码。这是<code>foo</code>的字节码：</p>
-<pre><code>&gt;&gt;&gt; import dis
-&gt;&gt;&gt; dis.dis(foo)
-  2           0 LOAD_GLOBAL              0 (bar)
-              3 CALL_FUNCTION            0 (0 positional, 0 keyword pair)
-              6 POP_TOP
-              7 LOAD_CONST               0 (None)
-             10 RETURN_VALUE
-</code></pre><p><code>foo</code>函数把<code>bar</code>加载到它的栈空间中然后调用它，然后从堆栈中弹出它的返回值，加载<code>None</code>到栈顶，然后返回<code>None</code>。</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="function"><span class="keyword">def</span> <span class="title">foo</span><span class="params">()</span>:</span></span><br><span class="line"><span class="meta">... </span>    bar()</span><br><span class="line">...</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="function"><span class="keyword">def</span> <span class="title">bar</span><span class="params">()</span>:</span></span><br><span class="line"><span class="meta">... </span>    <span class="keyword">pass</span></span><br></pre></td></tr></table></figure>
+<p>标准的Python解释器使用C语言编写的，当执行一个Python函数的C函数被称为<code>PyEval_EvalFrameEx</code>。它接受一个Python堆栈帧对象，在框架的上下文中评估Python的字节码。这是<code>foo</code>的字节码：</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="keyword">import</span> dis</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>dis.dis(foo)</span><br><span class="line">  <span class="number">2</span>           <span class="number">0</span> LOAD_GLOBAL              <span class="number">0</span> (bar)</span><br><span class="line">              <span class="number">3</span> CALL_FUNCTION            <span class="number">0</span> (<span class="number">0</span> positional, <span class="number">0</span> keyword pair)</span><br><span class="line">              <span class="number">6</span> POP_TOP</span><br><span class="line">              <span class="number">7</span> LOAD_CONST               <span class="number">0</span> (<span class="keyword">None</span>)</span><br><span class="line">             <span class="number">10</span> RETURN_VALUE</span><br></pre></td></tr></table></figure>
+<p><code>foo</code>函数把<code>bar</code>加载到它的栈空间中然后调用它，然后从堆栈中弹出它的返回值，加载<code>None</code>到栈顶，然后返回<code>None</code>。</p>
 <p>当<code>PyEval_EvalFrameEx</code>遇到<code>CALL_FUNCTION</code>字节码时，它创建一个新的Python堆栈帧并递归：也就是说，它在新的帧上递归地调用<code>PyEval_EvalFrameEx</code>，用于执行<code>bar</code>。</p>
 <p>理解Python堆栈帧在堆内存中的分配方式非常重要！Python解释器是一个普通的C程序，所以堆栈帧也是普通的堆栈帧。但是它操纵的堆栈帧在堆上。除去特殊的情况，它意味着Python的堆栈帧比它的函数调用更有效。为了看到这种交互，我们在<code>bar</code>中保存当前的帧：</p>
-<pre><code>&gt;&gt;&gt; import inspect
-&gt;&gt;&gt; frame = None
-&gt;&gt;&gt; def foo():
-...     bar()
-...
-&gt;&gt;&gt; def bar():
-...     global frame
-...     frame = inspect.currentframe()
-...
-&gt;&gt;&gt; foo()
-&gt;&gt;&gt; # The frame was executing the code for &apos;bar&apos;.
-&gt;&gt;&gt; frame.f_code.co_name
-&apos;bar&apos;
-&gt;&gt;&gt; # Its back pointer refers to the frame for &apos;foo&apos;.
-&gt;&gt;&gt; caller_frame = frame.f_back
-&gt;&gt;&gt; caller_frame.f_code.co_name
-&apos;foo&apos;
-</code></pre><p><img src="https://picbucket-1253466787.image.myqcloud.com/2018.2/function-calls.png" alt="" title="图5.1 - 函数调用"></p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="keyword">import</span> inspect</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>frame = <span class="keyword">None</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="function"><span class="keyword">def</span> <span class="title">foo</span><span class="params">()</span>:</span></span><br><span class="line"><span class="meta">... </span>    bar()</span><br><span class="line">...</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="function"><span class="keyword">def</span> <span class="title">bar</span><span class="params">()</span>:</span></span><br><span class="line"><span class="meta">... </span>    <span class="keyword">global</span> frame</span><br><span class="line"><span class="meta">... </span>    frame = inspect.currentframe()</span><br><span class="line">...</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>foo()</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="comment"># The frame was executing the code for 'bar'.</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>frame.f_code.co_name</span><br><span class="line"><span class="string">'bar'</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="comment"># Its back pointer refers to the frame for 'foo'.</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>caller_frame = frame.f_back</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>caller_frame.f_code.co_name</span><br><span class="line"><span class="string">'foo'</span></span><br></pre></td></tr></table></figure>
+<p><img src="https://picbucket-1253466787.image.myqcloud.com/2018.2/function-calls.png" alt="" title="图5.1 - 函数调用"></p>
 <p>这个阶段是为Python生成器设置的，使用相同的构建块——代码对象和堆栈帧，来达到神奇的效果。</p>
 <p>这是一个生成器函数：</p>
-<pre><code>&gt;&gt;&gt; def gen_fn():
-...     result = yield 1
-...     print(&apos;result of yield: {}&apos;.format(result))
-...     result2 = yield 2
-...     print(&apos;result of 2nd yield: {}&apos;.format(result2))
-...     return &apos;done&apos;
-...     
-</code></pre><p>当Python执行到<code>gen_fn</code>字节码时，它会看到yield语句然后知道<code>gen_fn</code>是一个生成器函数，而不是普通函数。它设置一个标记来记住这个事实：</p>
-<pre><code>&gt;&gt;&gt; # The generator flag is bit position 5.
-&gt;&gt;&gt; generator_bit = 1 &lt;&lt; 5
-&gt;&gt;&gt; bool(gen_fn.__code__.co_flags &amp; generator_bit)
-True
-</code></pre><p>当你调用一个生成器函数，Python发现生成器标记，然后它不会实际运行那个函数。相反，Python会创建一个生成器：</p>
-<pre><code>&gt;&gt;&gt; gen = gen_fn()
-&gt;&gt;&gt; type(gen)
-&lt;class &apos;generator&apos;&gt;
-</code></pre><p>Python生成器封装了一个堆栈帧，并引用了一些代码，即<code>gen_fn</code>的主体</p>
-<pre><code>&gt;&gt;&gt; gen.gi_code.co_name
-&apos;gen_fn&apos;
-</code></pre><p>所有由<code>gen_fn</code>调用的生成器指向相同的代码。但是他们有着自己的堆栈帧。这个堆栈帧不在任何实际的堆栈上，它存放在堆内存中等待使用：</p>
-<p><img src="https://picbucket-1253466787.image.myqcloud.com/2018.2/generators.png" alt="" title="图5.2 - 生成器"></p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="function"><span class="keyword">def</span> <span class="title">gen_fn</span><span class="params">()</span>:</span></span><br><span class="line"><span class="meta">... </span>    result = <span class="keyword">yield</span> <span class="number">1</span></span><br><span class="line"><span class="meta">... </span>    print(<span class="string">'result of yield: &#123;&#125;'</span>.format(result))</span><br><span class="line"><span class="meta">... </span>    result2 = <span class="keyword">yield</span> <span class="number">2</span></span><br><span class="line"><span class="meta">... </span>    print(<span class="string">'result of 2nd yield: &#123;&#125;'</span>.format(result2))</span><br><span class="line"><span class="meta">... </span>    <span class="keyword">return</span> <span class="string">'done'</span></span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+<p>当Python执行到<code>gen_fn</code>字节码时，它会看到yield语句然后知道<code>gen_fn</code>是一个生成器函数，而不是普通函数。它设置一个标记来记住这个事实：</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="comment"># The generator flag is bit position 5.</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>generator_bit = <span class="number">1</span> &lt;&lt; <span class="number">5</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>bool(gen_fn.__code__.co_flags &amp; generator_bit)</span><br><span class="line"><span class="keyword">True</span></span><br></pre></td></tr></table></figure>
+<p>当你调用一个生成器函数，Python发现生成器标记，然后它不会实际运行那个函数。相反，Python会创建一个生成器：</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span>gen = gen_fn()</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>type(gen)</span><br><span class="line">&lt;<span class="class"><span class="keyword">class</span> '<span class="title">generator</span>'&gt;</span></span><br></pre></td></tr></table></figure>
+<p>Python生成器封装了一个堆栈帧，并引用了一些代码，即<code>gen_fn</code>的主体</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span>gen.gi_code.co_name</span><br><span class="line"><span class="string">'gen_fn'</span></span><br></pre></td></tr></table></figure>
+<p>所有由<code>gen_fn</code>调用的生成器指向相同的代码。但是他们有着自己的堆栈帧。这个堆栈帧不在任何实际的堆栈上，它存放在堆内存中等待使用：</p>
+<p><img src="https://picbucket-1253466787.image.myqcloud.com/2018.2/generator.png" alt="" title="图5.2 - 生成器"></p>
 <p>这个帧包含一个“最后指令”的指针，指示帧执行的最后一个指令。开始的时候，最后指令指针的值是-1，意味着生成器还没有开始运行：</p>
-<pre><code>&gt;&gt;&gt; gen.gi_frame.f_lasti
--1
-</code></pre><p>当我们调用<code>send</code>，生成器到达它第一个<code>yield</code>，然后暂停。<code>send</code>的返回值是1，这是<code>gen</code>传给<code>yield</code>表达式的内容：</p>
-<pre><code>&gt;&gt;&gt; gen.send(None)
-1
-</code></pre><p>生成器指令指针现在是从头开始的3字节码，Python解释生成的代码是总共是56字节。</p>
-<pre><code>&gt;&gt;&gt; gen.gi_frame.f_lasti
-3
-&gt;&gt;&gt; len(gen.gi_code.co_code)
-56
-</code></pre><p>这个生成器可以在任何时候重启，被任意函数调用，因为它的堆栈帧并不是真正在堆栈中：而是在堆中。它在调用层次中的位置不是固定的，而且它也不需要遵循普通函数所遵循的先入后出执行顺序。它是自由的，像浮云一样。</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span>gen.gi_frame.f_lasti</span><br><span class="line"><span class="number">-1</span></span><br></pre></td></tr></table></figure>
+<p>当我们调用<code>send</code>，生成器到达它第一个<code>yield</code>，然后暂停。<code>send</code>的返回值是1，这是<code>gen</code>传给<code>yield</code>表达式的内容：</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span>gen.send(<span class="keyword">None</span>)</span><br><span class="line"><span class="number">1</span></span><br></pre></td></tr></table></figure>
+<p>生成器指令指针现在是从头开始的3字节码，Python解释生成的代码是总共是56字节。</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span>gen.gi_frame.f_lasti</span><br><span class="line"><span class="number">3</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>len(gen.gi_code.co_code)</span><br><span class="line"><span class="number">56</span></span><br></pre></td></tr></table></figure>
+<p>这个生成器可以在任何时候重启，被任意函数调用，因为它的堆栈帧并不是真正在堆栈中：而是在堆中。它在调用层次中的位置不是固定的，而且它也不需要遵循普通函数所遵循的先入后出执行顺序。它是自由的，像浮云一样。</p>
 <p>我们可以给生成器传递一个值”hello”，它将成为<code>yield</code>表达式的结果，然后生成器继续执行直到它产生2：</p>
-<pre><code>&gt;&gt;&gt; gen.send(&apos;hello&apos;)
-result of yield: hello
-2
-</code></pre><p>它的堆栈帧现在包含局部变量<code>result</code>：</p>
-<pre><code>&gt;&gt;&gt; gen.gi_frame.f_locals
-{&apos;result&apos;: &apos;hello&apos;}
-</code></pre><p>其它从<code>gen_fn</code>创建的生成器会拥有自己的堆栈帧和局部变量。</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span>gen.send(<span class="string">'hello'</span>)</span><br><span class="line">result of <span class="keyword">yield</span>: hello</span><br><span class="line"><span class="number">2</span></span><br></pre></td></tr></table></figure>
+<p>它的堆栈帧现在包含局部变量<code>result</code>：</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span>gen.gi_frame.f_locals</span><br><span class="line">&#123;<span class="string">'result'</span>: <span class="string">'hello'</span>&#125;</span><br></pre></td></tr></table></figure>
+<p>其它从<code>gen_fn</code>创建的生成器会拥有自己的堆栈帧和局部变量。</p>
 <p>当我们再次调用<code>send</code>的时候，生成器会从第二个<code>yield</code>继续执行，然后抛出一个特殊的<code>StopIteration</code>结束：</p>
-<pre><code>&gt;&gt;&gt; gen.send(&apos;goodbye&apos;)
-result of 2nd yield: goodbye
-Traceback (most recent call last):
-  File &quot;&lt;input&gt;&quot;, line 1, in &lt;module&gt;
-StopIteration: done
-</code></pre><p>这个异常有一个值，是生成器的返回值，字符串<code>&quot;done&quot;</code>。</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span>gen.send(<span class="string">'goodbye'</span>)</span><br><span class="line">result of <span class="number">2</span>nd <span class="keyword">yield</span>: goodbye</span><br><span class="line">Traceback (most recent call last):</span><br><span class="line">  File <span class="string">"&lt;input&gt;"</span>, line <span class="number">1</span>, <span class="keyword">in</span> &lt;module&gt;</span><br><span class="line">StopIteration: done</span><br></pre></td></tr></table></figure>
+<p>这个异常有一个值，是生成器的返回值，字符串<code>&quot;done&quot;</code>。</p>
 
       
     </div>
@@ -967,7 +782,7 @@ StopIteration: done
     
       <span class="post-meta-item-text">Site words total count&#58;</span>
     
-    <span title="Site words total count">15.0k</span>
+    <span title="Site words total count">15.2k</span>
   
 </div>
 
