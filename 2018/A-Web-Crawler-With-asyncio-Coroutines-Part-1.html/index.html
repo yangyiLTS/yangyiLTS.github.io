@@ -126,7 +126,7 @@
 <meta property="og:site_name" content="洋溢着温暖的微笑">
 <meta property="og:description" content="这是来自开源书籍500 Lines or Less中A Web Crawler With asyncio Coroutines一节的翻译。手翻略水，以原文为准。 A Web Crawler With asyncio Coroutines - A. Jesse Jiryu Davis and Guido van Rossum">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2018-02-11T08:52:57.400Z">
+<meta property="og:updated_time" content="2018-02-12T10:36:00.115Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="搬运 | 500 Lines or Less 基于Python协程的网页爬虫 （一） [施工中...]">
 <meta name="twitter:description" content="这是来自开源书籍500 Lines or Less中A Web Crawler With asyncio Coroutines一节的翻译。手翻略水，以原文为准。 A Web Crawler With asyncio Coroutines - A. Jesse Jiryu Davis and Guido van Rossum">
@@ -344,8 +344,8 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/note/" itemprop="url" rel="index">
-                    <span itemprop="name">笔记</span>
+                  <a href="/categories/technology/" itemprop="url" rel="index">
+                    <span itemprop="name">技术宅</span>
                   </a>
                 </span>
 
@@ -386,7 +386,7 @@
                   <span class="post-meta-item-text">字数统计&#58;</span>
                 
                 <span title="字数统计">
-                  2,300
+                  3,861
                 </span>
               
 
@@ -419,7 +419,7 @@
 <h1 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h1><p><strong>Introduction</strong></p>
 <p>传统的计算机科学注重于可以以最快速度完成计算任务的更高效的算法。但是很多网络应用程序不把时间花在cpu计算上，而花在保持某些缓慢的、出现突发事件的网络连接上。这些应用程序带来了一个艰难的挑战：更有效率地等待大量的网络连接。一个解决这个问题的现代方案是使用asynchronous 异步I/O，也叫async。</p>
 <p>本文提出一个简单的web爬虫。这个爬虫是一个典型的async应用程序，它在等待大量网络响应的同时只进行很少计算。爬虫能够获取的页面越多，它就越快结束。如果爬虫给每一个正在进行的请求分配一个线程，那么它会在系统sockets资源耗尽前先消耗完内存或其它线程相关的资源。使用异步I/O，就可以避免对大量线程的依赖。</p>
-<p>我们通过三个阶段来实现这个例子。一，给出一个async事件循环并且编写一个爬虫通过回掉函数去调用这个循环，回调函数是一个高效的方式，但是把它扩展并应用在更复杂场景的时候会产生难以维护的代码。二，我们展示了Python协程的高效性和可扩展性，我们使用Python的生成器函数来实现简单协程。最后一个阶段，我们使用Python标准库”asyncio”里面来创建具有完整功能的协程，并且用一个async队列来协调它。</p>
+<p>我们通过三个阶段来实现这个例子。一，给出一个async事件循环并且编写一个爬虫通过回掉函数去调用这个循环，回调函数是一个高效的方式，但是把它扩展并应用在更复杂场景的时候会产生难以维护的“面条式代码”。二，我们展示了Python协程的高效性和可扩展性，我们使用Python的生成器函数来实现简单协程。最后一个阶段，我们使用Python标准库”asyncio”里面来创建具有完整功能的协程，并且用一个async队列来协调它。</p>
 <h1 id="爬虫的目标"><a href="#爬虫的目标" class="headerlink" title="爬虫的目标"></a>爬虫的目标</h1><p><strong>The Task</strong></p>
 <p>一个web爬虫会找到并且下载一个网站上的所有页面，也许是为了索引或者归档它们。爬虫从一个根URL开始，抓取每一个页面并解析，抓取页面上没有访问过的链接，然后把链接加入一个队列。它会在找到的页面上没有未访问的链接，并在队列为空时结束。</p>
 <p>我们可以通过同时下载多个页面来加速这个进程。当爬虫找到新的链接时，它会在不同的socket上同时为新的页面启动抓取操作。它在http响应到达时解析它们，并且把新的链接加入到队列中。过多并发请求带来的性能下降可能会导致最终的效能降低，所以我们限制了并发请求的数量，把剩余的链接放在队列里面知道某些正在进行的请求完成。</p>
@@ -496,8 +496,110 @@ selector.register(sock.fileno(), EVENT_WRITE, connected)
 </code></pre><p><code>connected</code>的存储形式是<code>event_key.data</code>，我们会在非阻塞socket连接成功时第一时间执行它。</p>
 <p>与我们上面的简单（暴力？）循环不同，这里调用<code>select</code>的时候会暂停，等待下一个I/O事件。然后循环运行回调来等待这些事件。在收到事件循环的某个时间点之前，操作会保持挂起。</p>
 <p>我们已经说明了什么？我们展示了当（连接）操作就绪时如何开始一个操作和执行一个回调。一个异步框架基于我们刚才所说的两种特性构建：非阻塞socket和事件循环——在一个线程上实现并发操作。</p>
-<p>我们在这里已经实现了“并发”，但不是传统上说的“并发性”。也就是说，我们构建了一个可以进行重叠I/O的小系统。</p>
+<p>我们在这里已经实现了“并发”，但不是传统上说的“并发性”。也就是说，我们构建了一个可以进行重叠I/O的小系统。它有能力在其它操作正在进行的时候开始新的操作。它实际上并不是使用多个cpu核心来进行并行计算。但是，这种系统适用于I/O密集型问题，而不是CPU密集型问题。</p>
+<p>所以我们的事件循环对于并发I/O是非常有效的，因为，它并不给每一个连接分配线程资源。但是在我们继续之前，还需要纠正一个重要的问题：异步I/O比多线程要快？在大多数情况下不是的，的确，在Python中，像我们这种事件循环链接在服务于少量活跃连接时会比多线程操作要慢一点。在没有全局锁的工况下，多线程会在这种工作负荷中有更好的表现。异步I/O的优势在于，应用在许多的缓慢连接和低频事件中。</p>
 <h1 id="用回调函数编程"><a href="#用回调函数编程" class="headerlink" title="用回调函数编程"></a>用回调函数编程</h1><p><strong>Programming With Callbacks</strong></p>
+<p>到目前为止，我们已经建立起了简单的异步框架，那么如何编写一个web爬虫呢？即使编写一个简单URL爬取器也是痛苦的。</p>
+<p>我们从存放已经爬取过的URL和看到的URL的两个set开始。<em>（set：没有value的dict）</em></p>
+<pre><code>urls_todo = set([&apos;/&apos;])
+seen_urls = set([&apos;/&apos;])
+</code></pre><p>set<code>seen_urls</code>包含<code>urls_todo</code>的所有URL以及已经完成的URL。这两个set初始化时都包含根URL”/“。</p>
+<p>爬取一个页面需要一系列的回调函数。当socket连接时会触发<code>connected</code>回调函数，然后给服务器发送一个GET请求。之后，它必须等待服务器的应答，所以它拉起另外一个回调函数。如果，在回调函数触发时，它不能读取全部的服务器响应，它会再次注册，以此类推。</p>
+<p>我们把这些回调放在在<code>Fetcher</code>对象里。需要包含一个URL，一个sokcet对象，以及一个存放字节型响应的变量。</p>
+<pre><code>class Fetcher:
+    def __init__(self, url):
+        self.response = b&apos;&apos;  # Empty array of bytes.
+        self.url = url
+        self.sock = None
+</code></pre><p>从<code>Fetcher.fetch</code>方法开始：</p>
+<pre><code># Method on Fetcher class.
+def fetch(self):
+    self.sock = socket.socket()
+    self.sock.setblocking(False)
+    try:
+        self.sock.connect((&apos;xkcd.com&apos;, 80))
+    except BlockingIOError:
+        pass
+
+    # Register next callback.
+    selector.register(self.sock.fileno(),
+                      EVENT_WRITE,
+                      self.connected)
+</code></pre><p><code>fetch</code>方法从连接一个socket开始。但是要注意这个方法会在连接建立之前返回。它必须返回反正时间循环的控制以等待连接。为了理解原因，想象我们整个应用程序的结构是这样的：</p>
+<pre><code># Begin fetching http://xkcd.com/353/
+fetcher = Fetcher(&apos;/353/&apos;)
+fetcher.fetch()
+
+while True:
+    events = selector.select()
+    for event_key, event_mask in events:
+        callback = event_key.data
+        callback(event_key, event_mask)
+</code></pre><p>当<code>select</code>被调用时，事件循环会处理所有的事件通知。因此<code>fetch</code>必须手动控制事件循环，以便程序知道socket何时建立连接。只有这样，循环才会运行<code>connected</code>回调函数，这个回调函数是在<code>fetch</code>的结尾被注册的。</p>
+<p>下面是<code>connected</code>的实现。</p>
+<pre><code># Method on Fetcher class.
+def connected(self, key, mask):
+    print(&apos;connected!&apos;)
+    selector.unregister(key.fd)
+    request = &apos;GET {} HTTP/1.0\r\nHost: xkcd.com\r\n\r\n&apos;.format(self.url)
+    self.sock.send(request.encode(&apos;ascii&apos;))
+
+    # Register the next callback.
+    selector.register(key.fd,
+                      EVENT_READ,
+                      self.read_response)
+</code></pre><p>这个方法发送了一个GET请求。一个实际的应用程序会检测<code>send</code>的返回值，以防整个请求没有第一时间发送。但是我们的请求比较小，程序也不发杂。可以没有顾忌地调用<code>send</code>，然后等待响应。当然，它必须注册了下一个回调函数，并且将控制权交给了事件循环。下一个也是最后一个回调函数<code>read_response</code>，用于处理服务器的响应。</p>
+<pre><code># Method on Fetcher class.
+def read_response(self, key, mask):
+    global stopped
+
+    chunk = self.sock.recv(4096)  # 4k chunk size.
+    if chunk:
+        self.response += chunk
+    else:
+        selector.unregister(key.fd)  # Done reading.
+        links = self.parse_links()
+
+        # Python set-logic:
+        for link in links.difference(seen_urls):
+            urls_todo.add(link)
+            Fetcher(link).fetch()  # &lt;- New Fetcher.
+
+        seen_urls.update(links)
+        urls_todo.remove(self.url)
+        if not urls_todo:
+            stopped = True
+</code></pre><p>当selector发现socket是可读的时候，它便会执行这一个回掉函数。socket可读意味着，socket里面有数据并且已经关闭。</p>
+<p>回调函数会从socket读取最多4kb的数据。如果数据少于4kb，<code>chunk</code>会存取所有可用的数据。如果大于4kb，<code>chunk</code>会读取4kb的数据，但这个时候socket仍然是可读状态，所以事件循环会在下一个周期再次运行这个回调函数。当响应处理完成，服务器会关闭连接并且socket和<code>chunk</code>都是空的。</p>
+<p><code>parse_links</code>方法没有给出，它返回一个存放URL的set。我们在每一个新的URL开始新的爬取器，并没有并发限制。注意异步编程中使用回掉函数的一个优点：我们不需要互斥地对共享数据进行存取，例如我们向<code>seec_urls</code>添加一个链接。这是非抢占式的多任务，所以我们不能在程序的任意点中断。</p>
+<p>我们添加一个全局变量<code>stopped</code>用于循环的控制：</p>
+<pre><code>stopped = False
+
+def loop():
+    while not stopped:
+        events = selector.select()
+        for event_key, event_mask in events:
+            callback = event_key.data
+            callback()
+</code></pre><p>当所有页面下载下载完成时，抓取器会停止，全局时间循环和程序都会退出。</p>
+<p>这个例子清楚的说明了异步编程的问题：产生“面条式代码”。我们需要一种方式去表达一系列的计算和I/O操作，以及并发执行多个系列操作。但是在不使用多线程的情况下，一系列的操作不能用单个函数表达：当函数开始一个I/O操作时，它显式地保存它就将来所需的任何状态，然后返回。你要负责的是构思和编写这种状态保存代码。</p>
+<p>让我们来解释一下这是什么意思。考虑如何简单地在一个线程上使用常规的阻塞socket来抓取一个URL：</p>
+<pre><code># Blocking version.
+def fetch(url):
+    sock = socket.socket()
+    sock.connect((&apos;xkcd.com&apos;, 80))
+    request = &apos;GET {} HTTP/1.0\r\nHost: xkcd.com\r\n\r\n&apos;.format(url)
+    sock.send(request.encode(&apos;ascii&apos;))
+    response = b&apos;&apos;
+    chunk = sock.recv(4096)
+    while chunk:
+        response += chunk
+        chunk = sock.recv(4096)
+
+    # Page is now downloaded.
+    links = parse_links(response)
+    q.add(links)
+</code></pre><p>在一个socket操作和下一个之间，这个函数会保存什么状态呢？它有socket，URL以及累积接收的响应。</p>
 <h1 id="协程"><a href="#协程" class="headerlink" title="协程"></a>协程</h1><p><strong>Coroutines</strong></p>
 <h1 id="Python-生成器的工作原理"><a href="#Python-生成器的工作原理" class="headerlink" title="Python 生成器的工作原理"></a>Python 生成器的工作原理</h1><p><strong>How Python Generators Work</strong></p>
 
@@ -754,7 +856,7 @@ selector.register(sock.fileno(), EVENT_WRITE, connected)
     
       <span class="post-meta-item-text">Site words total count&#58;</span>
     
-    <span title="Site words total count">11.2k</span>
+    <span title="Site words total count">12.8k</span>
   
 </div>
 
