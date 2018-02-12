@@ -118,19 +118,20 @@
 
 
 
-<meta name="description" content="这是来自开源书籍500 Lines or Less中A Web Crawler With asyncio Coroutines一节的翻译。手翻略水，以原文为准。 A Web Crawler With asyncio Coroutines - A. Jesse Jiryu Davis and Guido van Rossum">
+<meta name="description" content="翻译自开源书籍500 Lines or Less中A Web Crawler With asyncio Coroutines一节。手翻略水，以原文为准。 A Web Crawler With asyncio Coroutines - A. Jesse Jiryu Davis and Guido van Rossum">
 <meta name="keywords" content="爬虫,Python">
 <meta property="og:type" content="article">
-<meta property="og:title" content="搬运 | 500 Lines or Less 基于Python协程的网页爬虫 （一） [施工中...]">
+<meta property="og:title" content="翻译 | 500 Lines or Less 基于Python协程的网页爬虫 （一） [施工中...]">
 <meta property="og:url" content="https://www.yangyilts.com/2018/A-Web-Crawler-With-asyncio-Coroutines-Part-1.html/index.html">
 <meta property="og:site_name" content="洋溢着温暖的微笑">
-<meta property="og:description" content="这是来自开源书籍500 Lines or Less中A Web Crawler With asyncio Coroutines一节的翻译。手翻略水，以原文为准。 A Web Crawler With asyncio Coroutines - A. Jesse Jiryu Davis and Guido van Rossum">
+<meta property="og:description" content="翻译自开源书籍500 Lines or Less中A Web Crawler With asyncio Coroutines一节。手翻略水，以原文为准。 A Web Crawler With asyncio Coroutines - A. Jesse Jiryu Davis and Guido van Rossum">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="https://picbucket-1253466787.image.myqcloud.com/2018.2/function-calls.png">
-<meta property="og:updated_time" content="2018-02-12T15:52:24.234Z">
+<meta property="og:image" content="https://picbucket-1253466787.image.myqcloud.com/2018.2/generators.png">
+<meta property="og:updated_time" content="2018-02-12T16:53:55.078Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="搬运 | 500 Lines or Less 基于Python协程的网页爬虫 （一） [施工中...]">
-<meta name="twitter:description" content="这是来自开源书籍500 Lines or Less中A Web Crawler With asyncio Coroutines一节的翻译。手翻略水，以原文为准。 A Web Crawler With asyncio Coroutines - A. Jesse Jiryu Davis and Guido van Rossum">
+<meta name="twitter:title" content="翻译 | 500 Lines or Less 基于Python协程的网页爬虫 （一） [施工中...]">
+<meta name="twitter:description" content="翻译自开源书籍500 Lines or Less中A Web Crawler With asyncio Coroutines一节。手翻略水，以原文为准。 A Web Crawler With asyncio Coroutines - A. Jesse Jiryu Davis and Guido van Rossum">
 <meta name="twitter:image" content="https://picbucket-1253466787.image.myqcloud.com/2018.2/function-calls.png">
 
 
@@ -167,7 +168,7 @@
 
 
 
-  <title>搬运 | 500 Lines or Less 基于Python协程的网页爬虫 （一） [施工中...] | 洋溢着温暖的微笑</title>
+  <title>翻译 | 500 Lines or Less 基于Python协程的网页爬虫 （一） [施工中...] | 洋溢着温暖的微笑</title>
   
 
 
@@ -311,7 +312,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">搬运 | 500 Lines or Less 基于Python协程的网页爬虫 （一） [施工中...]</h1>
+          <h1 class="post-title" itemprop="name headline">翻译 | 500 Lines or Less 基于Python协程的网页爬虫 （一） [施工中...]</h1>
         
 
         <div class="post-meta">
@@ -388,7 +389,7 @@
                   <span class="post-meta-item-text">字数统计&#58;</span>
                 
                 <span title="字数统计">
-                  5,419
+                  6,084
                 </span>
               
 
@@ -413,7 +414,7 @@
       
 
       
-        <p>这是来自开源书籍500 Lines or Less中A Web Crawler With asyncio Coroutines一节的翻译。手翻略水，以原文为准。</p>
+        <p>翻译自开源书籍500 Lines or Less中A Web Crawler With asyncio Coroutines一节。手翻略水，以原文为准。</p>
 <p><a href="http://aosabook.org/en/500L/a-web-crawler-with-asyncio-coroutines.html" target="_blank" rel="noopener">A Web Crawler With asyncio Coroutines - A. Jesse Jiryu Davis and Guido van Rossum</a></p>
 <a id="more"></a>
 <p>A. Jesse Jiryu Davis是纽约MongoDB的一名工程师。他编写了Motor，异步MongoDB Python驱动，并且他是MongoDB C 驱动的首席开发者和PyMongo团队的成员。同时，他也对asyncio和Tornada有贡献。他的主页是<a href="http://emptysqua.re." target="_blank" rel="noopener">http://emptysqua.re.</a></p>
@@ -662,6 +663,56 @@ def fetch(self, url):
 &gt;&gt;&gt; caller_frame.f_code.co_name
 &apos;foo&apos;
 </code></pre><p><img src="https://picbucket-1253466787.image.myqcloud.com/2018.2/function-calls.png" alt="" title="图5.1 - 函数调用"></p>
+<p>这个阶段是为Python生成器设置的，使用相同的构建块——代码对象和堆栈帧，来达到神奇的效果。</p>
+<p>这是一个生成器函数：</p>
+<pre><code>&gt;&gt;&gt; def gen_fn():
+...     result = yield 1
+...     print(&apos;result of yield: {}&apos;.format(result))
+...     result2 = yield 2
+...     print(&apos;result of 2nd yield: {}&apos;.format(result2))
+...     return &apos;done&apos;
+...     
+</code></pre><p>当Python执行到<code>gen_fn</code>字节码时，它会看到yield语句然后知道<code>gen_fn</code>是一个生成器函数，而不是普通函数。它设置一个标记来记住这个事实：</p>
+<pre><code>&gt;&gt;&gt; # The generator flag is bit position 5.
+&gt;&gt;&gt; generator_bit = 1 &lt;&lt; 5
+&gt;&gt;&gt; bool(gen_fn.__code__.co_flags &amp; generator_bit)
+True
+</code></pre><p>当你调用一个生成器函数，Python发现生成器标记，然后它不会实际运行那个函数。相反，Python会创建一个生成器：</p>
+<pre><code>&gt;&gt;&gt; gen = gen_fn()
+&gt;&gt;&gt; type(gen)
+&lt;class &apos;generator&apos;&gt;
+</code></pre><p>Python生成器封装了一个堆栈帧，并引用了一些代码，即<code>gen_fn</code>的主体</p>
+<pre><code>&gt;&gt;&gt; gen.gi_code.co_name
+&apos;gen_fn&apos;
+</code></pre><p>所有由<code>gen_fn</code>调用的生成器指向相同的代码。但是他们有着自己的堆栈帧。这个堆栈帧不在任何实际的堆栈上，它存放在堆内存中等待使用：</p>
+<p><img src="https://picbucket-1253466787.image.myqcloud.com/2018.2/generators.png" alt="" title="图5.2 - 生成器"></p>
+<p>这个帧包含一个“最后指令”的指针，指示帧执行的最后一个指令。开始的时候，最后指令指针的值是-1，意味着生成器还没有开始运行：</p>
+<pre><code>&gt;&gt;&gt; gen.gi_frame.f_lasti
+-1
+</code></pre><p>当我们调用<code>send</code>，生成器到达它第一个<code>yield</code>，然后暂停。<code>send</code>的返回值是1，这是<code>gen</code>传给<code>yield</code>表达式的内容：</p>
+<pre><code>&gt;&gt;&gt; gen.send(None)
+1
+</code></pre><p>生成器指令指针现在是从头开始的3字节码，Python解释生成的代码是总共是56字节。</p>
+<pre><code>&gt;&gt;&gt; gen.gi_frame.f_lasti
+3
+&gt;&gt;&gt; len(gen.gi_code.co_code)
+56
+</code></pre><p>这个生成器可以在任何时候重启，被任意函数调用，因为它的堆栈帧并不是真正在堆栈中：而是在堆中。它在调用层次中的位置不是固定的，而且它也不需要遵循普通函数所遵循的先入后出执行顺序。它是自由的，像浮云一样。</p>
+<p>我们可以给生成器传递一个值”hello”，它将成为<code>yield</code>表达式的结果，然后生成器继续执行直到它产生2：</p>
+<pre><code>&gt;&gt;&gt; gen.send(&apos;hello&apos;)
+result of yield: hello
+2
+</code></pre><p>它的堆栈帧现在包含局部变量<code>result</code>：</p>
+<pre><code>&gt;&gt;&gt; gen.gi_frame.f_locals
+{&apos;result&apos;: &apos;hello&apos;}
+</code></pre><p>其它从<code>gen_fn</code>创建的生成器会拥有自己的堆栈帧和局部变量。</p>
+<p>当我们再次调用<code>send</code>的时候，生成器会从第二个<code>yield</code>继续执行，然后抛出一个特殊的<code>StopIteration</code>结束：</p>
+<pre><code>&gt;&gt;&gt; gen.send(&apos;goodbye&apos;)
+result of 2nd yield: goodbye
+Traceback (most recent call last):
+  File &quot;&lt;input&gt;&quot;, line 1, in &lt;module&gt;
+StopIteration: done
+</code></pre><p>这个异常有一个值，是生成器的返回值，字符串<code>&quot;done&quot;</code>。</p>
 
       
     </div>
@@ -916,7 +967,7 @@ def fetch(self, url):
     
       <span class="post-meta-item-text">Site words total count&#58;</span>
     
-    <span title="Site words total count">14.4k</span>
+    <span title="Site words total count">15.0k</span>
   
 </div>
 
@@ -1065,7 +1116,7 @@ def fetch(self, url):
         var disqus_config = function () {
           this.page.url = 'https://www.yangyilts.com/2018/A-Web-Crawler-With-asyncio-Coroutines-Part-1.html/';
           this.page.identifier = '2018/A-Web-Crawler-With-asyncio-Coroutines-Part-1.html/';
-          this.page.title = '搬运 | 500 Lines or Less 基于Python协程的网页爬虫 （一） [施工中...]';
+          this.page.title = '翻译 | 500 Lines or Less 基于Python协程的网页爬虫 （一） [施工中...]';
         };
         var d = document, s = d.createElement('script');
         s.src = 'https://yangyilts.disqus.com/embed.js';
