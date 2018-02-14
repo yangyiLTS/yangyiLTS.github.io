@@ -121,16 +121,16 @@
 <meta name="description" content="翻译自开源书籍500 Lines or Less中A Web Crawler With asyncio Coroutines一节。手翻略水，以原文为准。 A Web Crawler With asyncio Coroutines - A. Jesse Jiryu Davis and Guido van Rossum">
 <meta name="keywords" content="爬虫,Python">
 <meta property="og:type" content="article">
-<meta property="og:title" content="翻译 | 500 Lines or Less 基于Python协程的网页爬虫 （一） [施工中...]">
+<meta property="og:title" content="翻译 | 500 Lines or Less 基于Python协程的网页爬虫 （一）">
 <meta property="og:url" content="https://www.yangyilts.com/2018/A-Web-Crawler-With-asyncio-Coroutines-Part-1.html/index.html">
 <meta property="og:site_name" content="洋溢着温暖的微笑">
 <meta property="og:description" content="翻译自开源书籍500 Lines or Less中A Web Crawler With asyncio Coroutines一节。手翻略水，以原文为准。 A Web Crawler With asyncio Coroutines - A. Jesse Jiryu Davis and Guido van Rossum">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="https://picbucket-1253466787.image.myqcloud.com/2018.2/function-calls.png">
 <meta property="og:image" content="https://picbucket-1253466787.image.myqcloud.com/2018.2/generator.png">
-<meta property="og:updated_time" content="2018-02-12T17:11:08.703Z">
+<meta property="og:updated_time" content="2018-02-13T09:31:04.371Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="翻译 | 500 Lines or Less 基于Python协程的网页爬虫 （一） [施工中...]">
+<meta name="twitter:title" content="翻译 | 500 Lines or Less 基于Python协程的网页爬虫 （一）">
 <meta name="twitter:description" content="翻译自开源书籍500 Lines or Less中A Web Crawler With asyncio Coroutines一节。手翻略水，以原文为准。 A Web Crawler With asyncio Coroutines - A. Jesse Jiryu Davis and Guido van Rossum">
 <meta name="twitter:image" content="https://picbucket-1253466787.image.myqcloud.com/2018.2/function-calls.png">
 
@@ -168,7 +168,7 @@
 
 
 
-  <title>翻译 | 500 Lines or Less 基于Python协程的网页爬虫 （一） [施工中...] | 洋溢着温暖的微笑</title>
+  <title>翻译 | 500 Lines or Less 基于Python协程的网页爬虫 （一） | 洋溢着温暖的微笑</title>
   
 
 
@@ -312,7 +312,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">翻译 | 500 Lines or Less 基于Python协程的网页爬虫 （一） [施工中...]</h1>
+          <h1 class="post-title" itemprop="name headline">翻译 | 500 Lines or Less 基于Python协程的网页爬虫 （一）</h1>
         
 
         <div class="post-meta">
@@ -389,7 +389,7 @@
                   <span class="post-meta-item-text">字数统计&#58;</span>
                 
                 <span title="字数统计">
-                  6,297
+                  6,329
                 </span>
               
 
@@ -417,6 +417,7 @@
         <p>翻译自开源书籍500 Lines or Less中A Web Crawler With asyncio Coroutines一节。手翻略水，以原文为准。</p>
 <p><a href="http://aosabook.org/en/500L/a-web-crawler-with-asyncio-coroutines.html" target="_blank" rel="noopener">A Web Crawler With asyncio Coroutines - A. Jesse Jiryu Davis and Guido van Rossum</a></p>
 <a id="more"></a>
+<p>这是文章的前半部分，后半部分见<br><a href="https://www.yangyilts.com/2018/A-Web-Crawler-With-asyncio-Coroutines-Part-2.html">翻译 | 500 Lines or Less 基于Python协程的网页爬虫 （二）</a></p>
 <p>A. Jesse Jiryu Davis是纽约MongoDB的一名工程师。他编写了Motor，异步MongoDB Python驱动，并且他是MongoDB C 驱动的首席开发者和PyMongo团队的成员。同时，他也对asyncio和Tornada有贡献。他的主页是<a href="http://emptysqua.re." target="_blank" rel="noopener">http://emptysqua.re.</a></p>
 <p>Guido van Rossum是一种主要用于web及线下的编程语言——Python的创造者。Python社区称之为“仁慈的独裁者”，它是来自短剧Monty Python的一个标题。Guido的主页是<a href="http://www.python.org/~guido/" target="_blank" rel="noopener">http://www.python.org/~guido/</a>。</p>
 <h1 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h1><p><strong>Introduction</strong></p>
@@ -493,25 +494,25 @@
 <p>协程的具体实现有很多，即使是Python中也有好几个。Python 3.4标准库”asyncio”中的协程实现是由生成器，Future类，以及”yield from”语句构成。<br>从Python3.5开始，协程成为Python语言的一个原生特征。然而，理解协程在Python 3.4中使用已经存在的语言工具的实现过程，是使用Python 3.5中原生支持的协程的基础。</p>
 <p>为了解释Python 3.4中基于生成器的协程实现，我们将参与一个关于生成器的阐述，以及它们是如何在asynico库中实现协程的，相信你会像我们享受编写的过程一下享受阅读的过程。当我们解释清楚了基于生成器的协程是如何实现的，我们就可以把它用于我们的异步web爬虫中。</p>
 <h1 id="Python-生成器的工作原理"><a href="#Python-生成器的工作原理" class="headerlink" title="Python 生成器的工作原理"></a>Python 生成器的工作原理</h1><p><strong>How Python Generators Work</strong></p>
-<p>在你理解Python的协程之前，你必须先明白Python常规函数是如何工作的。通常情况下，当Python函数调用一个子程序，子程序会持有控制权直到它返回，或者抛出一个异常。然后控制权交还给它的调用者。</p>
+<p>在你理解Python的协程之前，必须先明白Python常规函数是如何工作的。通常情况下，当Python函数调用一个子程序，子程序会持有控制权直到子程序返回，或者抛出一个异常。然后控制权交还给它的调用者。</p>
 <figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="function"><span class="keyword">def</span> <span class="title">foo</span><span class="params">()</span>:</span></span><br><span class="line"><span class="meta">... </span>    bar()</span><br><span class="line">...</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="function"><span class="keyword">def</span> <span class="title">bar</span><span class="params">()</span>:</span></span><br><span class="line"><span class="meta">... </span>    <span class="keyword">pass</span></span><br></pre></td></tr></table></figure>
-<p>标准的Python解释器使用C语言编写的，当执行一个Python函数的C函数被称为<code>PyEval_EvalFrameEx</code>。它接受一个Python堆栈帧对象，在框架的上下文中评估Python的字节码。这是<code>foo</code>的字节码：</p>
+<p>标准的Python解释器使用C语言编写的，执行一个Python函数的C函数被称为<code>PyEval_EvalFrameEx</code>。它接受一个Python栈帧对象，在栈帧的上下文中评估Python的字节码。这是<code>foo</code>的字节码：</p>
 <figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="keyword">import</span> dis</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>dis.dis(foo)</span><br><span class="line">  <span class="number">2</span>           <span class="number">0</span> LOAD_GLOBAL              <span class="number">0</span> (bar)</span><br><span class="line">              <span class="number">3</span> CALL_FUNCTION            <span class="number">0</span> (<span class="number">0</span> positional, <span class="number">0</span> keyword pair)</span><br><span class="line">              <span class="number">6</span> POP_TOP</span><br><span class="line">              <span class="number">7</span> LOAD_CONST               <span class="number">0</span> (<span class="keyword">None</span>)</span><br><span class="line">             <span class="number">10</span> RETURN_VALUE</span><br></pre></td></tr></table></figure>
-<p><code>foo</code>函数把<code>bar</code>加载到它的栈空间中然后调用它，然后从堆栈中弹出它的返回值，加载<code>None</code>到栈顶，然后返回<code>None</code>。</p>
-<p>当<code>PyEval_EvalFrameEx</code>遇到<code>CALL_FUNCTION</code>字节码时，它创建一个新的Python堆栈帧并递归：也就是说，它在新的帧上递归地调用<code>PyEval_EvalFrameEx</code>，用于执行<code>bar</code>。</p>
-<p>理解Python堆栈帧在堆内存中的分配方式非常重要！Python解释器是一个普通的C程序，所以堆栈帧也是普通的堆栈帧。但是它操纵的堆栈帧在堆上。除去特殊的情况，它意味着Python的堆栈帧比它的函数调用更有效。为了看到这种交互，我们在<code>bar</code>中保存当前的帧：</p>
+<p><code>foo</code>函数把<code>bar</code>加载到栈空间中并且调用它，然后从栈中弹出它的返回值，加载<code>None</code>到栈顶，然后返回<code>None</code>。</p>
+<p>当<code>PyEval_EvalFrameEx</code>遇到<code>CALL_FUNCTION</code>字节码时，它创建一个新的Python栈帧并递归：也就是说，它在新的帧上递归地调用<code>PyEval_EvalFrameEx</code>，用于执行<code>bar</code>。</p>
+<p>理解Python栈帧在堆内存中的分配方式非常重要！Python解释器是一个普通的C程序，所以栈帧也是普通的栈帧。但是它操纵的栈帧在堆上。除去特殊的情况，它意味着Python的栈帧在函数调用结束后依然有效。我们交互式地查看在<code>bar</code>中当前的帧：</p>
 <figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="keyword">import</span> inspect</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>frame = <span class="keyword">None</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="function"><span class="keyword">def</span> <span class="title">foo</span><span class="params">()</span>:</span></span><br><span class="line"><span class="meta">... </span>    bar()</span><br><span class="line">...</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="function"><span class="keyword">def</span> <span class="title">bar</span><span class="params">()</span>:</span></span><br><span class="line"><span class="meta">... </span>    <span class="keyword">global</span> frame</span><br><span class="line"><span class="meta">... </span>    frame = inspect.currentframe()</span><br><span class="line">...</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>foo()</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="comment"># The frame was executing the code for 'bar'.</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>frame.f_code.co_name</span><br><span class="line"><span class="string">'bar'</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="comment"># Its back pointer refers to the frame for 'foo'.</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>caller_frame = frame.f_back</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>caller_frame.f_code.co_name</span><br><span class="line"><span class="string">'foo'</span></span><br></pre></td></tr></table></figure>
 <p><img src="https://picbucket-1253466787.image.myqcloud.com/2018.2/function-calls.png" alt="" title="图5.1 - 函数调用"></p>
 <p>这个阶段是为Python生成器设置的，使用相同的构建块——代码对象和堆栈帧，来达到神奇的效果。</p>
 <p>这是一个生成器函数：</p>
 <figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="function"><span class="keyword">def</span> <span class="title">gen_fn</span><span class="params">()</span>:</span></span><br><span class="line"><span class="meta">... </span>    result = <span class="keyword">yield</span> <span class="number">1</span></span><br><span class="line"><span class="meta">... </span>    print(<span class="string">'result of yield: &#123;&#125;'</span>.format(result))</span><br><span class="line"><span class="meta">... </span>    result2 = <span class="keyword">yield</span> <span class="number">2</span></span><br><span class="line"><span class="meta">... </span>    print(<span class="string">'result of 2nd yield: &#123;&#125;'</span>.format(result2))</span><br><span class="line"><span class="meta">... </span>    <span class="keyword">return</span> <span class="string">'done'</span></span><br><span class="line">...</span><br></pre></td></tr></table></figure>
-<p>当Python执行到<code>gen_fn</code>字节码时，它会看到yield语句然后知道<code>gen_fn</code>是一个生成器函数，而不是普通函数。它设置一个标记来记住这个事实：</p>
+<p>当Python执行到<code>gen_fn</code>字节码时，它会看到yield语句然后知道<code>gen_fn</code>是一个生成器函数，而不是普通函数。它设置一个标志来记住这个事实：</p>
 <figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="comment"># The generator flag is bit position 5.</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>generator_bit = <span class="number">1</span> &lt;&lt; <span class="number">5</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>bool(gen_fn.__code__.co_flags &amp; generator_bit)</span><br><span class="line"><span class="keyword">True</span></span><br></pre></td></tr></table></figure>
-<p>当你调用一个生成器函数，Python发现生成器标记，然后它不会实际运行那个函数。相反，Python会创建一个生成器：</p>
+<p>当你调用一个生成器函数，Python发现生成器标志，然后它不会实际运行那个函数。相反，Python会创建一个生成器：</p>
 <figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span>gen = gen_fn()</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>type(gen)</span><br><span class="line">&lt;<span class="class"><span class="keyword">class</span> '<span class="title">generator</span>'&gt;</span></span><br></pre></td></tr></table></figure>
-<p>Python生成器封装了一个堆栈帧，并引用了一些代码，即<code>gen_fn</code>的主体</p>
+<p>Python生成器封装了一个栈帧，并引用了一些代码，即<code>gen_fn</code>的主体</p>
 <figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span>gen.gi_code.co_name</span><br><span class="line"><span class="string">'gen_fn'</span></span><br></pre></td></tr></table></figure>
-<p>所有由<code>gen_fn</code>调用的生成器指向相同的代码。但是他们有着自己的堆栈帧。这个堆栈帧不在任何实际的堆栈上，它存放在堆内存中等待使用：</p>
+<p>所有由<code>gen_fn</code>调用的生成器指向相同的代码。但是他们有着自己的栈帧。这个栈帧不在任何C函数栈上，它存放在堆内存中等待使用：</p>
 <p><img src="https://picbucket-1253466787.image.myqcloud.com/2018.2/generator.png" alt="" title="图5.2 - 生成器"></p>
 <p>这个帧包含一个“最后指令”的指针，指示帧执行的最后一个指令。开始的时候，最后指令指针的值是-1，意味着生成器还没有开始运行：</p>
 <figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span>gen.gi_frame.f_lasti</span><br><span class="line"><span class="number">-1</span></span><br></pre></td></tr></table></figure>
@@ -519,15 +520,17 @@
 <figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span>gen.send(<span class="keyword">None</span>)</span><br><span class="line"><span class="number">1</span></span><br></pre></td></tr></table></figure>
 <p>生成器指令指针现在是从头开始的3字节码，Python解释生成的代码是总共是56字节。</p>
 <figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span>gen.gi_frame.f_lasti</span><br><span class="line"><span class="number">3</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>len(gen.gi_code.co_code)</span><br><span class="line"><span class="number">56</span></span><br></pre></td></tr></table></figure>
-<p>这个生成器可以在任何时候重启，被任意函数调用，因为它的堆栈帧并不是真正在堆栈中：而是在堆中。它在调用层次中的位置不是固定的，而且它也不需要遵循普通函数所遵循的先入后出执行顺序。它是自由的，像浮云一样。</p>
+<p>这个生成器可以在任何时候重启，被任意函数调用，因为它的栈帧并不是真正在栈中：而是在堆中。它在调用链中的位置不是固定的，而且它也不需要遵循普通函数所遵循的先入后出执行顺序。它是自由的，像浮云一样。</p>
 <p>我们可以给生成器传递一个值”hello”，它将成为<code>yield</code>表达式的结果，然后生成器继续执行直到它产生2：</p>
 <figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span>gen.send(<span class="string">'hello'</span>)</span><br><span class="line">result of <span class="keyword">yield</span>: hello</span><br><span class="line"><span class="number">2</span></span><br></pre></td></tr></table></figure>
-<p>它的堆栈帧现在包含局部变量<code>result</code>：</p>
+<p>它的栈帧现在包含局部变量<code>result</code>：</p>
 <figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span>gen.gi_frame.f_locals</span><br><span class="line">&#123;<span class="string">'result'</span>: <span class="string">'hello'</span>&#125;</span><br></pre></td></tr></table></figure>
-<p>其它从<code>gen_fn</code>创建的生成器会拥有自己的堆栈帧和局部变量。</p>
+<p>其它从<code>gen_fn</code>创建的生成器会拥有自己的栈帧和局部变量。</p>
 <p>当我们再次调用<code>send</code>的时候，生成器会从第二个<code>yield</code>继续执行，然后抛出一个特殊的<code>StopIteration</code>结束：</p>
 <figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span>gen.send(<span class="string">'goodbye'</span>)</span><br><span class="line">result of <span class="number">2</span>nd <span class="keyword">yield</span>: goodbye</span><br><span class="line">Traceback (most recent call last):</span><br><span class="line">  File <span class="string">"&lt;input&gt;"</span>, line <span class="number">1</span>, <span class="keyword">in</span> &lt;module&gt;</span><br><span class="line">StopIteration: done</span><br></pre></td></tr></table></figure>
-<p>这个异常有一个值，是生成器的返回值，字符串<code>&quot;done&quot;</code>。</p>
+<p>这个异常有一个值<code>&quot;done&quot;</code>，是生成器的返回值。</p>
+<hr>
+<p>第一部分完成，下接：<br><a href="https://www.yangyilts.com/2018/A-Web-Crawler-With-asyncio-Coroutines-Part-2.html">翻译 | 500 Lines or Less 基于Python协程的网页爬虫 （二）</a></p>
 
       
     </div>
@@ -587,6 +590,10 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/A-Web-Crawler-With-asyncio-Coroutines-Part-2.html/" rel="prev" title="翻译 | 500 Lines or Less 基于Python协程的网页爬虫 （二） [施工中...]">
+                翻译 | 500 Lines or Less 基于Python协程的网页爬虫 （二） [施工中...] <i class="fa fa-chevron-right"></i>
+              </a>
             
           </div>
         </div>
@@ -677,7 +684,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">11</span>
+                  <span class="site-state-item-count">12</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -782,7 +789,7 @@
     
       <span class="post-meta-item-text">Site words total count&#58;</span>
     
-    <span title="Site words total count">15.2k</span>
+    <span title="Site words total count">15.8k</span>
   
 </div>
 
@@ -931,7 +938,7 @@
         var disqus_config = function () {
           this.page.url = 'https://www.yangyilts.com/2018/A-Web-Crawler-With-asyncio-Coroutines-Part-1.html/';
           this.page.identifier = '2018/A-Web-Crawler-With-asyncio-Coroutines-Part-1.html/';
-          this.page.title = '翻译 | 500 Lines or Less 基于Python协程的网页爬虫 （一） [施工中...]';
+          this.page.title = '翻译 | 500 Lines or Less 基于Python协程的网页爬虫 （一）';
         };
         var d = document, s = d.createElement('script');
         s.src = 'https://yangyilts.disqus.com/embed.js';

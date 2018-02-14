@@ -107,7 +107,7 @@
 
 
 
-  <meta name="keywords" content="树莓派," />
+  <meta name="keywords" content="爬虫,Python," />
 
 
 
@@ -118,18 +118,18 @@
 
 
 
-<meta name="description" content="OSMC是一个可以用于树莓派的多媒体应用系统，其中集成的kodi可以很好的作为一个家庭多媒体中心，但是OSMC默认并没有集成浏览器功能，我在OSMC论坛上找到一个为OSMC安装Chromium的脚本。 来源：Joakim_Sandstrom — [Testing] X11(simple desktop) + Chromium(web browser) in a simple installer f">
-<meta name="keywords" content="树莓派">
+<meta name="description" content="翻译自开源书籍500 Lines or Less中A Web Crawler With asyncio Coroutines一节。 A Web Crawler With asyncio Coroutines - A. Jesse Jiryu Davis and Guido van Rossum 第一部分见翻译 | 500 Lines or Less 基于Python协程的网页爬虫 （一）">
+<meta name="keywords" content="爬虫,Python">
 <meta property="og:type" content="article">
-<meta property="og:title" content="给树莓派上的OSMC安装简单桌面和Chromium ">
-<meta property="og:url" content="https://www.yangyilts.com/2018/给树莓派上的OSMC安装简单桌面和Chromium.html/index.html">
+<meta property="og:title" content="翻译 | 500 Lines or Less 基于Python协程的网页爬虫 （二） [施工中...]">
+<meta property="og:url" content="https://www.yangyilts.com/2018/A-Web-Crawler-With-asyncio-Coroutines-Part-2.html/index.html">
 <meta property="og:site_name" content="洋溢着温暖的微笑">
-<meta property="og:description" content="OSMC是一个可以用于树莓派的多媒体应用系统，其中集成的kodi可以很好的作为一个家庭多媒体中心，但是OSMC默认并没有集成浏览器功能，我在OSMC论坛上找到一个为OSMC安装Chromium的脚本。 来源：Joakim_Sandstrom — [Testing] X11(simple desktop) + Chromium(web browser) in a simple installer f">
+<meta property="og:description" content="翻译自开源书籍500 Lines or Less中A Web Crawler With asyncio Coroutines一节。 A Web Crawler With asyncio Coroutines - A. Jesse Jiryu Davis and Guido van Rossum 第一部分见翻译 | 500 Lines or Less 基于Python协程的网页爬虫 （一）">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2018-01-26T12:40:30.826Z">
+<meta property="og:updated_time" content="2018-02-14T10:15:25.378Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="给树莓派上的OSMC安装简单桌面和Chromium ">
-<meta name="twitter:description" content="OSMC是一个可以用于树莓派的多媒体应用系统，其中集成的kodi可以很好的作为一个家庭多媒体中心，但是OSMC默认并没有集成浏览器功能，我在OSMC论坛上找到一个为OSMC安装Chromium的脚本。 来源：Joakim_Sandstrom — [Testing] X11(simple desktop) + Chromium(web browser) in a simple installer f">
+<meta name="twitter:title" content="翻译 | 500 Lines or Less 基于Python协程的网页爬虫 （二） [施工中...]">
+<meta name="twitter:description" content="翻译自开源书籍500 Lines or Less中A Web Crawler With asyncio Coroutines一节。 A Web Crawler With asyncio Coroutines - A. Jesse Jiryu Davis and Guido van Rossum 第一部分见翻译 | 500 Lines or Less 基于Python协程的网页爬虫 （一）">
 
 
 
@@ -159,13 +159,13 @@
 
 
 
-  <link rel="canonical" href="https://www.yangyilts.com/2018/给树莓派上的OSMC安装简单桌面和Chromium.html/"/>
+  <link rel="canonical" href="https://www.yangyilts.com/2018/A-Web-Crawler-With-asyncio-Coroutines-Part-2.html/"/>
 
 
 
 
 
-  <title>给树莓派上的OSMC安装简单桌面和Chromium  | 洋溢着温暖的微笑</title>
+  <title>翻译 | 500 Lines or Less 基于Python协程的网页爬虫 （二） [施工中...] | 洋溢着温暖的微笑</title>
   
 
 
@@ -292,7 +292,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://www.yangyilts.com/2018/给树莓派上的OSMC安装简单桌面和Chromium.html/">
+    <link itemprop="mainEntityOfPage" href="https://www.yangyilts.com/2018/A-Web-Crawler-With-asyncio-Coroutines-Part-2.html/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="YANG Yi">
@@ -309,7 +309,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">给树莓派上的OSMC安装简单桌面和Chromium </h1>
+          <h1 class="post-title" itemprop="name headline">翻译 | 500 Lines or Less 基于Python协程的网页爬虫 （二） [施工中...]</h1>
         
 
         <div class="post-meta">
@@ -321,8 +321,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-01-23T21:22:36+08:00">
-                2018-01-23
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-02-13T16:54:30+08:00">
+                2018-02-13
               </time>
             
 
@@ -344,8 +344,8 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/note/" itemprop="url" rel="index">
-                    <span itemprop="name">笔记</span>
+                  <a href="/categories/technology/" itemprop="url" rel="index">
+                    <span itemprop="name">技术宅</span>
                   </a>
                 </span>
 
@@ -362,9 +362,9 @@
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a href="/2018/给树莓派上的OSMC安装简单桌面和Chromium.html/#comments" itemprop="discussionUrl">
+                <a href="/2018/A-Web-Crawler-With-asyncio-Coroutines-Part-2.html/#comments" itemprop="discussionUrl">
                   <span class="post-comments-count disqus-comment-count"
-                        data-disqus-identifier="2018/给树莓派上的OSMC安装简单桌面和Chromium.html/" itemprop="commentCount"></span>
+                        data-disqus-identifier="2018/A-Web-Crawler-With-asyncio-Coroutines-Part-2.html/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -386,7 +386,7 @@
                   <span class="post-meta-item-text">字数统计&#58;</span>
                 
                 <span title="字数统计">
-                  209
+                  526
                 </span>
               
 
@@ -411,19 +411,22 @@
       
 
       
-        <p>OSMC是一个可以用于树莓派的多媒体应用系统，其中集成的kodi可以很好的作为一个家庭多媒体中心，但是OSMC默认并没有集成浏览器功能，我在OSMC论坛上找到一个为OSMC安装Chromium的脚本。</p>
-<p><a href="https://discourse.osmc.tv/t/testing-x11-simple-desktop-chromium-web-browser-in-a-simple-installer-for-stretch/16846" target="_blank" rel="noopener">来源：Joakim_Sandstrom — [Testing] X11(simple desktop) + Chromium(web browser) in a simple installer for Stretch</a></p>
+        <p>翻译自开源书籍500 Lines or Less中A Web Crawler With asyncio Coroutines一节。</p>
+<p><a href="http://aosabook.org/en/500L/a-web-crawler-with-asyncio-coroutines.html" target="_blank" rel="noopener">A Web Crawler With asyncio Coroutines - A. Jesse Jiryu Davis and Guido van Rossum</a></p>
+<p>第一部分见<br><a href="http://localhost:4000/2018/A-Web-Crawler-With-asyncio-Coroutines-Part-1.html/" target="_blank" rel="noopener">翻译 | 500 Lines or Less 基于Python协程的网页爬虫 （一）</a></p>
 <a id="more"></a>
-<p>X11是一个用于OSMC系统的简单桌面，包含了Chromium和文件管理功能。</p>
-<p>安装：</p>
-<pre><code>wget https://raw.githubusercontent.com/zjoasan/x11-osmc/master/install_x11.sh
-sh ./install_x11.sh
-</code></pre><p>大约需要10分钟，最终在OSMC内添加一个启动插件，依次进入Settings-&gt;Add-on Browser-&gt;My add-ons-&gt;Program add-ons-&gt;X11 Launcher-&gt;Enable，启动X11桌面。</p>
-<p>至于在线视频，原作者说</p>
-<blockquote>
-<p>Chromium is not accelerated, so streaming isn’t the goal of this installation.</p>
-</blockquote>
-<p>实测B站h5播放器可以运行，10秒后卡死。</p>
+<h1 id="用生成器构建协程"><a href="#用生成器构建协程" class="headerlink" title="用生成器构建协程"></a>用生成器构建协程</h1><p><strong>Building Coroutines With Generators</strong></p>
+<p>所以一个生成器可以暂停，可以用一个值恢复，并且它有一个返回值。听起来是一个很好的特性，可以在不使用面条式的回调函数的情况下编写一个异步I/O模块。我们的目的是构建一个“协程”：一个可以在程序中与其它例程合作调度的例程。我们的协程是Python标准库”asynico”中协程的一个简化版本。就像在asyncio库中一样，我们会使用生成器，futures类，和”yield from”语句。</p>
+<p>首先，我们需要一个方法来表示一个协程正在等待的future类事件，一个简化版本为：</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Future</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self)</span>:</span></span><br><span class="line">        self.result = <span class="keyword">None</span></span><br><span class="line">        self._callbacks = []</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">add_done_callback</span><span class="params">(self, fn)</span>:</span></span><br><span class="line">        self._callbacks.append(fn)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">set_result</span><span class="params">(self, result)</span>:</span></span><br><span class="line">        self.result = result</span><br><span class="line">        <span class="keyword">for</span> fn <span class="keyword">in</span> self._callbacks:</span><br><span class="line">            fn(self)</span><br></pre></td></tr></table></figure>
+<p>一个future被初始化为“未解决的”，他通过调用<code>set_result</code>来解决。</p>
+<p>让我们用futures类和协程来改写我们的抓取器。先使用回调函数编写一个fetch：</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Fetcher</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">fetch</span><span class="params">(self)</span>:</span></span><br><span class="line">        self.sock = socket.socket()</span><br><span class="line">        self.sock.setblocking(<span class="keyword">False</span>)</span><br><span class="line">        <span class="keyword">try</span>:</span><br><span class="line">            self.sock.connect((<span class="string">'xkcd.com'</span>, <span class="number">80</span>))</span><br><span class="line">        <span class="keyword">except</span> BlockingIOError:</span><br><span class="line">            <span class="keyword">pass</span></span><br><span class="line">        selector.register(self.sock.fileno(),</span><br><span class="line">                          EVENT_WRITE,</span><br><span class="line">                          self.connected)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">connected</span><span class="params">(self, key, mask)</span>:</span></span><br><span class="line">        print(<span class="string">'connected!'</span>)</span><br><span class="line">        <span class="comment"># And so on....</span></span><br></pre></td></tr></table></figure>
+<p><code>fetch</code>方法从连接一个socket开始，然后注册一个回调函数<code>connected</code>，当socket准备好的时候执行<code>connected</code>。现在，我们可以把两个步骤整合在一个协程里面：</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">fetch</span><span class="params">(self)</span>:</span></span><br><span class="line">    sock = socket.socket()</span><br><span class="line">    sock.setblocking(<span class="keyword">False</span>)</span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        sock.connect((<span class="string">'xkcd.com'</span>, <span class="number">80</span>))</span><br><span class="line">    <span class="keyword">except</span> BlockingIOError:</span><br><span class="line">        <span class="keyword">pass</span></span><br><span class="line"></span><br><span class="line">    f = Future()</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">on_connected</span><span class="params">()</span>:</span></span><br><span class="line">        f.set_result(<span class="keyword">None</span>)</span><br><span class="line"></span><br><span class="line">    selector.register(sock.fileno(),</span><br><span class="line">                      EVENT_WRITE,</span><br><span class="line">                      on_connected)</span><br><span class="line">    <span class="keyword">yield</span> f</span><br><span class="line">    selector.unregister(sock.fileno())</span><br><span class="line">    print(<span class="string">'connected!'</span>)</span><br></pre></td></tr></table></figure>
+<h1 id="用yield-from重构协程"><a href="#用yield-from重构协程" class="headerlink" title="用yield from重构协程"></a>用<code>yield from</code>重构协程</h1><p><strong>Factoring Coroutines With <code>yield from</code></strong></p>
+<h1 id="使用协程工作"><a href="#使用协程工作" class="headerlink" title="使用协程工作"></a>使用协程工作</h1><p><strong>Coordinating Coroutines</strong></p>
+<h1 id="结论"><a href="#结论" class="headerlink" title="结论"></a>结论</h1><p><strong>Conclusion</strong></p>
 
       
     </div>
@@ -459,7 +462,9 @@ sh ./install_x11.sh
       
         <div class="post-tags">
           
-            <a href="/tags/树莓派/" rel="tag"># 树莓派</a>
+            <a href="/tags/爬虫/" rel="tag"># 爬虫</a>
+          
+            <a href="/tags/Python/" rel="tag"># Python</a>
           
         </div>
       
@@ -472,8 +477,8 @@ sh ./install_x11.sh
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2018/Nginx-Hexo-实现博客自动部署及全站https.html/" rel="next" title="Nginx + Hexo 实现博客备份、自动部署及全站https">
-                <i class="fa fa-chevron-left"></i> Nginx + Hexo 实现博客备份、自动部署及全站https
+              <a href="/2018/A-Web-Crawler-With-asyncio-Coroutines-Part-1.html/" rel="next" title="翻译 | 500 Lines or Less 基于Python协程的网页爬虫 （一）">
+                <i class="fa fa-chevron-left"></i> 翻译 | 500 Lines or Less 基于Python协程的网页爬虫 （一）
               </a>
             
           </div>
@@ -481,10 +486,6 @@ sh ./install_x11.sh
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2018/PAT-B-1045-快速排序.html/" rel="prev" title="PAT-B 1045. 快速排序">
-                PAT-B 1045. 快速排序 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -546,8 +547,17 @@ sh ./install_x11.sh
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+      <section class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
@@ -627,6 +637,22 @@ sh ./install_x11.sh
         </div>
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#用生成器构建协程"><span class="nav-number">1.</span> <span class="nav-text">用生成器构建协程</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#用yield-from重构协程"><span class="nav-number">2.</span> <span class="nav-text">用yield from重构协程</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#使用协程工作"><span class="nav-number">3.</span> <span class="nav-text">使用协程工作</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#结论"><span class="nav-number">4.</span> <span class="nav-text">结论</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       
@@ -802,9 +828,9 @@ sh ./install_x11.sh
     
       <script type="text/javascript">
         var disqus_config = function () {
-          this.page.url = 'https://www.yangyilts.com/2018/给树莓派上的OSMC安装简单桌面和Chromium.html/';
-          this.page.identifier = '2018/给树莓派上的OSMC安装简单桌面和Chromium.html/';
-          this.page.title = '给树莓派上的OSMC安装简单桌面和Chromium ';
+          this.page.url = 'https://www.yangyilts.com/2018/A-Web-Crawler-With-asyncio-Coroutines-Part-2.html/';
+          this.page.identifier = '2018/A-Web-Crawler-With-asyncio-Coroutines-Part-2.html/';
+          this.page.title = '翻译 | 500 Lines or Less 基于Python协程的网页爬虫 （二） [施工中...]';
         };
         var d = document, s = d.createElement('script');
         s.src = 'https://yangyilts.disqus.com/embed.js';
