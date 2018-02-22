@@ -2,16 +2,16 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
-    <loc>https://www.yangyilts.com/2018/A-Web-Crawler-With-asyncio-Coroutines-Part-2.html/</loc>
+    <loc>https://www.yangyilts.com/about/index.html</loc>
     
-    <lastmod>2018-02-18T15:32:34.590Z</lastmod>
+    <lastmod>2018-02-22T09:22:03.032Z</lastmod>
     
   </url>
   
   <url>
-    <loc>https://www.yangyilts.com/2018/%E8%BF%9E%E5%B7%9E%E7%89%9B%E8%82%89%E9%9D%A2%E6%A8%AA%E5%90%91%E6%B5%8B%E8%AF%84.html/</loc>
+    <loc>https://www.yangyilts.com/2018/A-Web-Crawler-With-asyncio-Coroutines-Part-2.html/</loc>
     
-    <lastmod>2018-02-17T15:16:25.319Z</lastmod>
+    <lastmod>2018-02-22T09:20:30.065Z</lastmod>
     
   </url>
   
@@ -26,13 +26,6 @@
     <loc>https://www.yangyilts.com/categories/index.html</loc>
     
     <lastmod>2018-02-06T10:41:39.434Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://www.yangyilts.com/about/index.html</loc>
-    
-    <lastmod>2018-02-06T10:41:05.006Z</lastmod>
     
   </url>
   

@@ -126,10 +126,12 @@
 <meta property="og:site_name" content="洋溢着温暖的微笑">
 <meta property="og:description" content="翻译自开源书籍500 Lines or Less中A Web Crawler With asyncio Coroutines一节。 A Web Crawler With asyncio Coroutines - A. Jesse Jiryu Davis and Guido van Rossum 第一部分见翻译 | 500 Lines or Less 基于Python协程的网页爬虫 （一）">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2018-02-18T15:32:34.590Z">
+<meta property="og:image" content="https://picbucket-1253466787.image.com/2018.2/Yield_From.png">
+<meta property="og:updated_time" content="2018-02-22T09:20:30.065Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="翻译 | 500 Lines or Less 基于Python协程的网页爬虫 （二） [施工中...]">
 <meta name="twitter:description" content="翻译自开源书籍500 Lines or Less中A Web Crawler With asyncio Coroutines一节。 A Web Crawler With asyncio Coroutines - A. Jesse Jiryu Davis and Guido van Rossum 第一部分见翻译 | 500 Lines or Less 基于Python协程的网页爬虫 （一）">
+<meta name="twitter:image" content="https://picbucket-1253466787.image.com/2018.2/Yield_From.png">
 
 
 
@@ -386,7 +388,7 @@
                   <span class="post-meta-item-text">字数统计&#58;</span>
                 
                 <span title="字数统计">
-                  1,771
+                  2,405
                 </span>
               
 
@@ -456,6 +458,22 @@
 <figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">read</span><span class="params">(sock)</span>:</span></span><br><span class="line">    f = Future()</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">on_readable</span><span class="params">()</span>:</span></span><br><span class="line">        f.set_result(sock.recv(<span class="number">4096</span>))</span><br><span class="line"></span><br><span class="line">    selector.register(sock.fileno(), EVENT_READ, on_readable)</span><br><span class="line">    chunk = <span class="keyword">yield</span> f  <span class="comment"># Read one chunk.</span></span><br><span class="line">    selector.unregister(sock.fileno())</span><br><span class="line">    <span class="keyword">return</span> chunk</span><br></pre></td></tr></table></figure>
 <p>我们在<code>read</code>的基础上，构建<code>read_all</code>读取整个消息：</p>
 <figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">read_all</span><span class="params">(sock)</span>:</span></span><br><span class="line">    response = []</span><br><span class="line">    <span class="comment"># Read whole response.</span></span><br><span class="line">    chunk = <span class="keyword">yield</span> <span class="keyword">from</span> read(sock)</span><br><span class="line">    <span class="keyword">while</span> chunk:</span><br><span class="line">        response.append(chunk)</span><br><span class="line">        chunk = <span class="keyword">yield</span> <span class="keyword">from</span> read(sock)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="string">b''</span>.join(response)</span><br></pre></td></tr></table></figure>
+<p>如果你从另一个角度看，<code>yield from</code>语句消失了而且它就像一个普通阻塞I/O函数一样。但实际上，<code>read</code>和<code>read_all</code>函数都是协程。<code>read</code>通过<code>yield from</code>暂停<code>read_all</code>直到I/O操作完成。当<code>read_all</code>暂停的时候，异步I/O的事件循环会进行其它的任务并且等待其它I/O事件；<code>read</code>在下次循环中当事件就绪，完成I/O操作时，<code>read_all</code>恢复运行。</p>
+<p>最后一步，<code>fetch</code>调用了<code>read_all</code>。</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Fetcher</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">fetch</span><span class="params">(self)</span>:</span></span><br><span class="line">         <span class="comment"># ... connection logic from above, then:</span></span><br><span class="line">        sock.send(request.encode(<span class="string">'ascii'</span>))</span><br><span class="line">        self.response = <span class="keyword">yield</span> <span class="keyword">from</span> read_all(sock)</span><br></pre></td></tr></table></figure>
+<p>神奇的是，Task类不需要被修改，它可以像以前一样驱动<code>fetch</code>协程。</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Task(fetcher.fetch())</span><br><span class="line">loop()</span><br></pre></td></tr></table></figure>
+<p>当<code>read</code>yield出一个future，task从<code>yield from</code>管道接收它，就像这个future直接从<code>fetch</code>yield出来一样。当循环解决一个future，task向<code>fetch</code>发送它的结果，值被<code>read</code>接收，这个过程就像task直接驱动<code>read</code>一样。</p>
+<p><img src="https://picbucket-1253466787.image.com/2018.2/Yield_From.png" alt="" title="图5.3 - Yield From"></p>
+<p>为了完善我们的协程实现，我们再做一些打磨：我们的代码在等待一个future时使用<code>yield</code>，在委托一个子协程的时候使用<code>yield from</code>。如果我们不管是不是协程都使用<code>yield from</code>，代码将会更精炼。这样，协程不需要关心它等待的东西的类型。</p>
+<p>我们在Python生成器和迭代器的高度相似性中得到好处。对于调用者来说，推进一个生成器就像推进一个迭代器一样。所以我们用一个特殊的方法实现来让Future类变成可迭代对象。</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Method on Future class.</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">__iter__</span><span class="params">(self)</span>:</span></span><br><span class="line">    <span class="comment"># Tell Task to resume me here.</span></span><br><span class="line">    <span class="keyword">yield</span> self</span><br><span class="line">    <span class="keyword">return</span> self.result</span><br></pre></td></tr></table></figure>
+<p>future中的<code>__iter__</code>方法是一个yield它自身的协程。现在我们将我们的代码替换：</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># f is a Future.</span></span><br><span class="line"><span class="keyword">yield</span> f</span><br></pre></td></tr></table></figure>
+<p>替换成：</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># f is a Future.</span></span><br><span class="line"><span class="keyword">yield</span> <span class="keyword">from</span> f</span><br></pre></td></tr></table></figure>
+<p>结果是一样的！驱动Task从它调用的<code>send</code>中接收一个future，当future被解决时它向协程发送一个新的结果。</p>
+<p>在所有地方都使用<code>yield from</code>的好处是什么？为什么比用<code>yield</code>等待future然后<code>yield from</code>委派子协程更好？原因是，一个方法可以快速地改变它的实现而不影响其调用者：它是一个普通的方法可以在future解决时返回一个值，或者是一个包含<code>yield from</code>语句并且会返回一个值的协程。另一方面，调用者只需要<code>yield from</code>这个方法然后等待结果就行了。</p>
 <h1 id="使用协程工作"><a href="#使用协程工作" class="headerlink" title="使用协程工作"></a>使用协程工作</h1><p><strong>Coordinating Coroutines</strong></p>
 <h1 id="结论"><a href="#结论" class="headerlink" title="结论"></a>结论</h1><p><strong>Conclusion</strong></p>
 
@@ -517,10 +535,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2018/连州牛肉面横向测评.html/" rel="prev" title="连州牛肉面横向测评">
-                连州牛肉面横向测评 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -611,7 +625,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">13</span>
+                  <span class="site-state-item-count">12</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -716,7 +730,7 @@
     
       <span class="post-meta-item-text">Site words total count&#58;</span>
     
-    <span title="Site words total count">17.0k</span>
+    <span title="Site words total count">17.7k</span>
   
 </div>
 
