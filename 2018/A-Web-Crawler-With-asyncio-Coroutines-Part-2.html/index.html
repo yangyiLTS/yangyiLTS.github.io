@@ -121,16 +121,16 @@
 <meta name="description" content="翻译自开源书籍500 Lines or Less中A Web Crawler With asyncio Coroutines一节。 A Web Crawler With asyncio Coroutines - A. Jesse Jiryu Davis and Guido van Rossum 第一部分见翻译 | 500 Lines or Less 基于Python协程的网页爬虫 （一）">
 <meta name="keywords" content="爬虫,Python">
 <meta property="og:type" content="article">
-<meta property="og:title" content="翻译 | 500 Lines or Less 基于Python协程的网页爬虫 （二） [施工中...]">
+<meta property="og:title" content="翻译 | 500 Lines or Less 基于Python协程的网页爬虫 （二）">
 <meta property="og:url" content="https://www.yangyilts.com/2018/A-Web-Crawler-With-asyncio-Coroutines-Part-2.html/index.html">
 <meta property="og:site_name" content="洋溢着温暖的微笑">
 <meta property="og:description" content="翻译自开源书籍500 Lines or Less中A Web Crawler With asyncio Coroutines一节。 A Web Crawler With asyncio Coroutines - A. Jesse Jiryu Davis and Guido van Rossum 第一部分见翻译 | 500 Lines or Less 基于Python协程的网页爬虫 （一）">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="https://picbucket-1253466787.image.com/2018.2/Yield_From.png">
 <meta property="og:image" content="https://picbucket-1253466787.image.myqcloud.com/2018.2/redirects.png">
-<meta property="og:updated_time" content="2018-02-26T14:37:56.090Z">
+<meta property="og:updated_time" content="2018-02-27T02:25:27.478Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="翻译 | 500 Lines or Less 基于Python协程的网页爬虫 （二） [施工中...]">
+<meta name="twitter:title" content="翻译 | 500 Lines or Less 基于Python协程的网页爬虫 （二）">
 <meta name="twitter:description" content="翻译自开源书籍500 Lines or Less中A Web Crawler With asyncio Coroutines一节。 A Web Crawler With asyncio Coroutines - A. Jesse Jiryu Davis and Guido van Rossum 第一部分见翻译 | 500 Lines or Less 基于Python协程的网页爬虫 （一）">
 <meta name="twitter:image" content="https://picbucket-1253466787.image.com/2018.2/Yield_From.png">
 
@@ -168,7 +168,7 @@
 
 
 
-  <title>翻译 | 500 Lines or Less 基于Python协程的网页爬虫 （二） [施工中...] | 洋溢着温暖的微笑</title>
+  <title>翻译 | 500 Lines or Less 基于Python协程的网页爬虫 （二） | 洋溢着温暖的微笑</title>
   
 
 
@@ -312,7 +312,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">翻译 | 500 Lines or Less 基于Python协程的网页爬虫 （二） [施工中...]</h1>
+          <h1 class="post-title" itemprop="name headline">翻译 | 500 Lines or Less 基于Python协程的网页爬虫 （二）</h1>
         
 
         <div class="post-meta">
@@ -389,7 +389,7 @@
                   <span class="post-meta-item-text">字数统计&#58;</span>
                 
                 <span title="字数统计">
-                  6,152
+                  6,563
                 </span>
               
 
@@ -416,7 +416,7 @@
       
         <p>翻译自开源书籍500 Lines or Less中A Web Crawler With asyncio Coroutines一节。</p>
 <p><a href="http://aosabook.org/en/500L/a-web-crawler-with-asyncio-coroutines.html" target="_blank" rel="noopener">A Web Crawler With asyncio Coroutines - A. Jesse Jiryu Davis and Guido van Rossum</a></p>
-<p>第一部分见<br><a href="http://localhost:4000/2018/A-Web-Crawler-With-asyncio-Coroutines-Part-1.html/" target="_blank" rel="noopener">翻译 | 500 Lines or Less 基于Python协程的网页爬虫 （一）</a></p>
+<p>第一部分见<br><a href="https://www.yangyilts.com/2018/A-Web-Crawler-With-asyncio-Coroutines-Part-1.html/">翻译 | 500 Lines or Less 基于Python协程的网页爬虫 （一）</a></p>
 <a id="more"></a>
 <h1 id="用生成器构建协程"><a href="#用生成器构建协程" class="headerlink" title="用生成器构建协程"></a>用生成器构建协程</h1><p><strong>Building Coroutines With Generators</strong></p>
 <p>所以一个生成器可以暂停，可以用一个值恢复，并且它有一个返回值。听起来是一个很好的特性，可以在不使用面条式的回调函数的情况下编写一个异步I/O模块。我们的目的是构建一个“协程”：一个可以在程序中与其它例程合作调度的例程。我们的协程是Python标准库”asynico”中协程的一个简化版本。就像在asyncio库中一样，我们会使用生成器，futures类，和”yield from”语句。</p>
@@ -537,6 +537,10 @@
 <h1 id="结论"><a href="#结论" class="headerlink" title="结论"></a>结论</h1><p><strong>Conclusion</strong></p>
 <p>现代程序更多的是I/O密集型而不是CPU密集型。对于这些程序，Python多线程有两个缺陷：GIL全局锁使得它们实际上并没有进行并行计算，抢占式切换是的他们更容易出现竞争。异步I/O通常上来说是正确的模式。但是随着基于回调函数的代码的增加，会导致出现混乱难以读懂的程序。协程是一个简洁的替代者。它们可以自然地被分解成子过程，有着完整的异常处理和堆栈跟踪。</p>
 <p>如果我们从另一个角度看<code>yield from</code>语句，一个协程更像一个传统的做阻塞I/O的线程。我们可以使用与传统多线程编程相似的模式进行协程的编程，它不需要被重塑。因此，相比于回调函数，协程对于有着丰富检验的多线程程序员更为适合。</p>
+<p>但是当我们关注<code>yield from</code>语句的时候，我们可以看到协程放弃控制权，允许其它人运行的特点。不像线程那样，协程可以显示代码中可以中断的地方和不可以中断的地方。Glyph Lefkowitz富有启发性的文章写道：“线程让局部推理变得困难，而局部推理也许是软件开发中最重要的事情。”然而明确的yield，让“通过过程本身而不是整个系统去理解它的行为（和因此、正确性）”成为可能。</p>
+<p>这一篇文章写于Python和异步的复兴时期。你刚刚学到的基于生成器的协程，包含在2014年3月发布的Python 3.4 的”asynico”库中。在2015年9月，Python 3.5发布，协程成为语言的一部分。这个原生的协程通过新的语法”async def”来声明，使用新的”await”关键字代替”yield from”委派协程或者等待一个Future。</p>
+<p>尽管有了这些改进，核心思想还是不变的。Python的新原生协程与生成器语法不同，但是它们的工作原理非常相似；实际上，它们在Python解释器中共用一种实现方法。Task，Future，以及事件循环在asynico中还是扮演着同样的角色。</p>
+<p>现在你知道了asynico协程是如何工作的，你可以忘记大部分的细节。它们的机制隐藏在一个整洁的接口下。但是理解这些基本原理可以让在现代异步环境中你高效而正确地编写代码。</p>
 
       
     </div>
@@ -791,7 +795,7 @@
     
       <span class="post-meta-item-text">Site words total count&#58;</span>
     
-    <span title="Site words total count">21.4k</span>
+    <span title="Site words total count">21.8k</span>
   
 </div>
 
@@ -940,7 +944,7 @@
         var disqus_config = function () {
           this.page.url = 'https://www.yangyilts.com/2018/A-Web-Crawler-With-asyncio-Coroutines-Part-2.html/';
           this.page.identifier = '2018/A-Web-Crawler-With-asyncio-Coroutines-Part-2.html/';
-          this.page.title = '翻译 | 500 Lines or Less 基于Python协程的网页爬虫 （二） [施工中...]';
+          this.page.title = '翻译 | 500 Lines or Less 基于Python协程的网页爬虫 （二）';
         };
         var d = document, s = d.createElement('script');
         s.src = 'https://yangyilts.disqus.com/embed.js';
