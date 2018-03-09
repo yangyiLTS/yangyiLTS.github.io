@@ -1,3 +1,4 @@
+https://www.yangyilts.com/2018/PAT-A-1055-The-World-s-Richest.html/
 https://www.yangyilts.com/2018/PAT-A-1016-Phone-Bills.html/
 https://www.yangyilts.com/2018/A-Web-Crawler-With-asyncio-Coroutines-Part-2.html/
 https://www.yangyilts.com/2018/A-Web-Crawler-With-asyncio-Coroutines-Part-1.html/
