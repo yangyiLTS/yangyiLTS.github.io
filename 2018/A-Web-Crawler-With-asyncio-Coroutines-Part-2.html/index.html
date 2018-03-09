@@ -126,13 +126,13 @@
 <meta property="og:site_name" content="洋溢着温暖的微笑">
 <meta property="og:description" content="翻译自开源书籍500 Lines or Less中A Web Crawler With asyncio Coroutines一节。 A Web Crawler With asyncio Coroutines - A. Jesse Jiryu Davis and Guido van Rossum 第一部分见翻译 | 500 Lines or Less 基于Python协程的网页爬虫 （一）">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="https://picbucket-1253466787.image.com/2018.2/Yield_From.png">
+<meta property="og:image" content="https://picbucket-1253466787.image.myqcloud.com/2018.2/Yield_From.png">
 <meta property="og:image" content="https://picbucket-1253466787.image.myqcloud.com/2018.2/redirects.png">
-<meta property="og:updated_time" content="2018-02-27T02:25:27.478Z">
+<meta property="og:updated_time" content="2018-03-04T13:49:03.250Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="翻译 | 500 Lines or Less 基于Python协程的网页爬虫 （二）">
 <meta name="twitter:description" content="翻译自开源书籍500 Lines or Less中A Web Crawler With asyncio Coroutines一节。 A Web Crawler With asyncio Coroutines - A. Jesse Jiryu Davis and Guido van Rossum 第一部分见翻译 | 500 Lines or Less 基于Python协程的网页爬虫 （一）">
-<meta name="twitter:image" content="https://picbucket-1253466787.image.com/2018.2/Yield_From.png">
+<meta name="twitter:image" content="https://picbucket-1253466787.image.myqcloud.com/2018.2/Yield_From.png">
 
 
 
@@ -458,7 +458,7 @@
 <p>神奇的是，Task类不需要被修改，它可以像以前一样驱动<code>fetch</code>协程。</p>
 <figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Task(fetcher.fetch())</span><br><span class="line">loop()</span><br></pre></td></tr></table></figure>
 <p>当<code>read</code>yield出一个future，task从<code>yield from</code>管道接收它，就像这个future直接从<code>fetch</code>yield出来一样。当循环解决一个future，task向<code>fetch</code>发送它的结果，值被<code>read</code>接收，这个过程就像task直接驱动<code>read</code>一样。</p>
-<p><img src="https://picbucket-1253466787.image.com/2018.2/Yield_From.png" alt="" title="图5.3 - Yield From"></p>
+<p><img src="https://picbucket-1253466787.image.myqcloud.com/2018.2/Yield_From.png" alt="" title="图5.3 - Yield From"></p>
 <p>为了完善我们的协程实现，我们再做一些打磨：我们的代码在等待一个future时使用<code>yield</code>，在委托一个子协程的时候使用<code>yield from</code>。如果我们不管是不是协程都使用<code>yield from</code>，代码将会更精炼。这样，协程不需要关心它等待的东西的类型。</p>
 <p>我们在Python生成器和迭代器的高度相似性中得到好处。对于调用者来说，推进一个生成器就像推进一个迭代器一样。所以我们用一个特殊的方法实现来让Future类变成可迭代对象。</p>
 <figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Method on Future class.</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">__iter__</span><span class="params">(self)</span>:</span></span><br><span class="line">    <span class="comment"># Tell Task to resume me here.</span></span><br><span class="line">    <span class="keyword">yield</span> self</span><br><span class="line">    <span class="keyword">return</span> self.result</span><br></pre></td></tr></table></figure>
@@ -601,6 +601,10 @@
 
           <div class="post-nav-prev post-nav-item">
             
+              <a href="/2018/PAT-A-1016-Phone-Bills.html/" rel="prev" title="PAT-A 1016. Phone Bills">
+                PAT-A 1016. Phone Bills <i class="fa fa-chevron-right"></i>
+              </a>
+            
           </div>
         </div>
       
@@ -690,7 +694,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">12</span>
+                  <span class="site-state-item-count">13</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -795,7 +799,7 @@
     
       <span class="post-meta-item-text">Site words total count&#58;</span>
     
-    <span title="Site words total count">21.8k</span>
+    <span title="Site words total count">23.0k</span>
   
 </div>
 
