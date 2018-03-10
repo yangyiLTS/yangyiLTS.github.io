@@ -107,7 +107,7 @@
 
 
 
-  <meta name="keywords" content="PAT-Advanced," />
+  <meta name="keywords" content="单片机,C语言," />
 
 
 
@@ -118,18 +118,20 @@
 
 
 
-<meta name="description" content="寻找最长共同后缀，由于位置固定，难度较小；">
-<meta name="keywords" content="PAT-Advanced">
+<meta name="description" content="msp430是一块主打低功耗的芯片，相比51系列单片机性能好得多，片内资源也非常丰富，缺点是价格比较贵。而如果不在意功耗的话，stm32明显是更好的选择。">
+<meta name="keywords" content="单片机,C语言">
 <meta property="og:type" content="article">
-<meta property="og:title" content="PAT-A 1077.Kuchiguse">
-<meta property="og:url" content="https://www.yangyilts.com/2018/PAT-A-1077-Kuchiguse.html/index.html">
+<meta property="og:title" content="msp430单片机开发笔记">
+<meta property="og:url" content="https://www.yangyilts.com/2018/msp430单片机开发笔记.html/index.html">
 <meta property="og:site_name" content="洋溢着温暖的微笑">
-<meta property="og:description" content="寻找最长共同后缀，由于位置固定，难度较小；">
+<meta property="og:description" content="msp430是一块主打低功耗的芯片，相比51系列单片机性能好得多，片内资源也非常丰富，缺点是价格比较贵。而如果不在意功耗的话，stm32明显是更好的选择。">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2018-02-02T15:44:10.466Z">
+<meta property="og:image" content="https://picbucket-1253466787.image.myqcloud.com/2018.3/motor2.jpg">
+<meta property="og:updated_time" content="2018-03-10T02:18:40.959Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="PAT-A 1077.Kuchiguse">
-<meta name="twitter:description" content="寻找最长共同后缀，由于位置固定，难度较小；">
+<meta name="twitter:title" content="msp430单片机开发笔记">
+<meta name="twitter:description" content="msp430是一块主打低功耗的芯片，相比51系列单片机性能好得多，片内资源也非常丰富，缺点是价格比较贵。而如果不在意功耗的话，stm32明显是更好的选择。">
+<meta name="twitter:image" content="https://picbucket-1253466787.image.myqcloud.com/2018.3/motor2.jpg">
 
 
 
@@ -159,13 +161,13 @@
 
 
 
-  <link rel="canonical" href="https://www.yangyilts.com/2018/PAT-A-1077-Kuchiguse.html/"/>
+  <link rel="canonical" href="https://www.yangyilts.com/2018/msp430单片机开发笔记.html/"/>
 
 
 
 
 
-  <title>PAT-A 1077.Kuchiguse | 洋溢着温暖的微笑</title>
+  <title>msp430单片机开发笔记 | 洋溢着温暖的微笑</title>
   
 
 
@@ -292,7 +294,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://www.yangyilts.com/2018/PAT-A-1077-Kuchiguse.html/">
+    <link itemprop="mainEntityOfPage" href="https://www.yangyilts.com/2018/msp430单片机开发笔记.html/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="YANG Yi">
@@ -309,7 +311,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">PAT-A 1077.Kuchiguse</h1>
+          <h1 class="post-title" itemprop="name headline">msp430单片机开发笔记</h1>
         
 
         <div class="post-meta">
@@ -321,8 +323,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-02-02T23:12:07+08:00">
-                2018-02-02
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-03-10T01:14:01+08:00">
+                2018-03-10
               </time>
             
 
@@ -362,9 +364,9 @@
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a href="/2018/PAT-A-1077-Kuchiguse.html/#comments" itemprop="discussionUrl">
+                <a href="/2018/msp430单片机开发笔记.html/#comments" itemprop="discussionUrl">
                   <span class="post-comments-count disqus-comment-count"
-                        data-disqus-identifier="2018/PAT-A-1077-Kuchiguse.html/" itemprop="commentCount"></span>
+                        data-disqus-identifier="2018/msp430单片机开发笔记.html/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -386,7 +388,7 @@
                   <span class="post-meta-item-text">字数统计&#58;</span>
                 
                 <span title="字数统计">
-                  601
+                  504
                 </span>
               
 
@@ -411,92 +413,17 @@
       
 
       
-        <p>寻找最长共同后缀，由于位置固定，难度较小；</p>
+        <p>msp430是一块主打低功耗的芯片，相比51系列单片机性能好得多，片内资源也非常丰富，缺点是价格比较贵。而如果不在意功耗的话，stm32明显是更好的选择。</p>
 <a id="more"></a>
-<p><strong>A 1077</strong></p>
-<p><a href="https://www.patest.cn/contests/pat-a-practise/1077" target="_blank" rel="noopener">PAT(Advanced) 1077. Kuchiguse</a></p>
-<p>The Japanese language is notorious for its sentence ending particles. Personal preference of such particles can be considered as a reflection of the speaker’s personality. Such a preference is called “Kuchiguse” and is often exaggerated artistically in Anime and Manga. For example, the artificial sentence ending particle “nyan~” is often used as a stereotype for characters with a cat-like personality:</p>
-<p>Itai nyan~ (It hurts, nyan~)<br>Ninjin wa iyada nyan~ (I hate carrots, nyan~)<br>Now given a few lines spoken by the same character, can you find her Kuchiguse?</p>
-<p><strong>Input Specification:</strong></p>
-<p>Each input file contains one test case. For each case, the first line is an integer N (2&lt;=N&lt;=100). Following are N file lines of 0~256 (inclusive) characters in length, each representing a character’s spoken line. The spoken lines are case sensitive.</p>
-<p><strong>Output Specification:</strong></p>
-<p>For each test case, print in one line the kuchiguse of the character, i.e., the longest common suffix of all N lines. If there is no such suffix, write “nai”.</p>
-<p><strong>Sample Input 1:</strong></p>
-<p>3<br>Itai nyan~<br>Ninjin wa iyadanyan~<br>uhhh nyan~</p>
-<p><strong>Sample Output 1:</strong></p>
-<p>nyan~</p>
-<p><strong>Sample Input 2:</strong></p>
-<p>3<br>Itai!<br>Ninjinnwaiyada T_T<br>T_T</p>
-<p><strong>Sample Output 2:</strong></p>
-<p>nai</p>
-<p><strong>题目大意</strong></p>
-<p>题目描述了一个关于日语表达习惯的背景，主要的要求是：输入N（2&lt;=N&lt;100）个有可能包含空格的字符串（长度小于等于256），找出它们的共同后缀并输出，如果没有共同后缀，则输出nai。</p>
-<p><strong>思路</strong></p>
-<ol>
-<li>使用c风格字符数组读入字符串</li>
-<li><p>编写一个字符串反转函数，使所有输入的字符串反转，实现后缀的对齐</p>
-<pre><code>//字符串反转函数
+<p>我用的是某宝上的DM430—L最小系统版。这块板的资料详尽，针对初学者有视频教程，入门非常方便。下面的代码需要依赖<a href="https://github.com/yangyiLTS/myGraduationDisign/blob/master/msp430/Config.h" target="_blank" rel="noopener">Config.h</a>头文件。</p>
+<h1 id="控制15BY2二相四线步进电机"><a href="#控制15BY2二相四线步进电机" class="headerlink" title="控制15BY2二相四线步进电机"></a>控制15BY2二相四线步进电机</h1><p>这是一个二相四线的电机，我用4拍的方式进行控制，具体电平如图。</p>
+<p><img src="https://picbucket-1253466787.image.myqcloud.com/2018.3/motor2.jpg" alt=""></p>
+<p>开数组存储4拍的电平，通过传入参数d判断正转或反转。其中<code>position</code>存储着全局的电机位置，由于我的电机转速比是1：1000，所以一圈是20000步。最后控制电平在P3.0~P3.3输出接电机驱动。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> position = <span class="number">0</span>;</span><br><span class="line">uchar step_up[<span class="number">4</span>] = &#123;<span class="number">0x09</span>,<span class="number">0x0A</span>,<span class="number">0x06</span>,<span class="number">0x05</span>&#125;;  <span class="comment">//正转  </span></span><br><span class="line">uchar step_down[<span class="number">4</span>] = &#123;<span class="number">0x05</span>,<span class="number">0x06</span>,<span class="number">0x0A</span>,<span class="number">0x09</span>&#125;;  <span class="comment">//反转</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">motor_step</span><span class="params">(uchar d)</span></span>&#123;</span><br><span class="line">  <span class="keyword">if</span> (d)&#123;</span><br><span class="line">    <span class="keyword">for</span>(uchar i = <span class="number">0</span>; i &lt; <span class="number">4</span>; i++)&#123;</span><br><span class="line">      P3OUT = step_up[i];</span><br><span class="line">      delay_ms(<span class="number">1</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    position++;</span><br><span class="line">    <span class="keyword">if</span>(position == <span class="number">20000</span>)&#123;</span><br><span class="line">      position = <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    P3OUT = <span class="number">0x00</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">else</span>&#123;</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">char</span> i = <span class="number">0</span>; i &lt; <span class="number">4</span> ; i++)&#123;</span><br><span class="line">      P3OUT = step_down[i];</span><br><span class="line">      delay_ms(<span class="number">1</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    position--;</span><br><span class="line">    <span class="keyword">if</span>(position &lt; <span class="number">0</span>)&#123;</span><br><span class="line">      position = <span class="number">19999</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    P3OUT = <span class="number">0x00</span>;</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+<h1 id="在1602LCD上输出一个整数"><a href="#在1602LCD上输出一个整数" class="headerlink" title="在1602LCD上输出一个整数"></a>在1602LCD上输出一个整数</h1><p>DM430的例程中只给了输出单个字符和以及输出字符串的函数，如果要输出整形则需要转换。递归分拆整数至单个字符输出，只需要3行代码：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//***********************************************************************</span></span><br><span class="line"><span class="comment">//	显示屏整形写入函数</span></span><br><span class="line"><span class="comment">//***********************************************************************</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">LCD_write_int</span><span class="params">(<span class="keyword">unsigned</span> <span class="keyword">char</span> x,<span class="keyword">unsigned</span> <span class="keyword">char</span> y,<span class="keyword">unsigned</span> <span class="keyword">int</span> data)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  <span class="keyword">if</span>(data &gt;= <span class="number">10</span>)&#123;</span><br><span class="line">    LCD_write_int(x - <span class="number">1</span>, y, data / <span class="number">10</span>);</span><br><span class="line">  &#125;</span><br><span class="line">  LCD_write_char(x, y, data % <span class="number">10</span> + <span class="number">0x30</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这里有一个不同的地方是函数的x参数需要传入期望输出个位数的位置，而不是整形最高位的位置。当然，也可以用<code>sprintf</code>将整形转换至字符串，这个方法需要包含<code>stdio.h</code>头文件。</p>
 
-void Reverse(char s[], int n) {
-    for (int i = 0, j = n - 1; i &lt; j; i++, j--) {
-    char temp = s[i];
-    s[i] = s[j];
-    s[j] = temp;
-    }
-}
-</code></pre></li>
-<li><p>假设输入的第一个字符串是共同后缀<code>subStr</code></p>
-</li>
-<li>将接下来输入的字符串与<code>subStr</code>逐个字符比较，如果第i个字符不相同，则令<code>subStr[i] = &#39;\0&#39;</code>，相当于截短了子串</li>
-<li>如果<code>subStr[0]</code>为<code>&#39;\0&#39;</code>，说明没有共同后缀，输出nai，否则输出<code>subStr</code></li>
-</ol>
-<p>AC代码</p>
-<pre><code>#include &lt;iostream&gt;
-#include &lt;cstdio&gt;
-#include &lt;stdlib.h&gt;
-#include &lt;string.h&gt;
-
-using namespace std;
-
-void Reverse(char s[], int n) {
-    for (int i = 0, j = n - 1; i &lt; j; i++, j--) {
-        char temp = s[i];
-        s[i] = s[j];
-        s[j] = temp;
-    }
-}
-
-int main() {
-    int N;
-    cin &gt;&gt; N;
-    cin.get(); // 抛掉cin流中的&apos;\n&apos;
-    char subStr[257];
-    for (int i = 0; i &lt; N; i++) {
-        char temp[257];
-        cin.getline(temp, 257); // 因为输入字符中可能有空格 所以要用getline
-        Reverse(temp, strlen(temp));
-        if (i == 0) {
-            strcpy(subStr, temp);
-        }
-        else {
-            for (int j = 0; j &lt; 257 &amp;&amp; subStr[j] != &apos;\0&apos;; j++) {
-                if (temp[j] != subStr[j]) {
-                    subStr[j] = &apos;\0&apos;;
-                    break;
-                }
-            }
-        }
-    }
-    Reverse(subStr,strlen(subStr));
-    if (subStr[0] == &apos;\0&apos;) {
-        cout &lt;&lt; &quot;nai&quot;;
-    }
-    else {
-        cout &lt;&lt; subStr;
-    }
-    return 0;
-}
-</code></pre>
       
     </div>
     
@@ -531,7 +458,9 @@ int main() {
       
         <div class="post-tags">
           
-            <a href="/tags/PAT-Advanced/" rel="tag"># PAT-Advanced</a>
+            <a href="/tags/单片机/" rel="tag"># 单片机</a>
+          
+            <a href="/tags/C语言/" rel="tag"># C语言</a>
           
         </div>
       
@@ -544,8 +473,8 @@ int main() {
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2018/PAT-A-1065-A-B-and-C-64bit.html/" rel="next" title="PAT-A 1065. A+B and C (64bit)">
-                <i class="fa fa-chevron-left"></i> PAT-A 1065. A+B and C (64bit)
+              <a href="/2018/PAT-A-1055-The-World-s-Richest.html/" rel="next" title="PAT-A 1055. The World's Richest">
+                <i class="fa fa-chevron-left"></i> PAT-A 1055. The World's Richest
               </a>
             
           </div>
@@ -553,10 +482,6 @@ int main() {
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2018/一步退烧！REALFORCE-SE07T0-87UW-使用体验.html/" rel="prev" title="一步退烧？REALFORCE SE07T0 87UW 使用体验 ">
-                一步退烧？REALFORCE SE07T0 87UW 使用体验  <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -618,8 +543,17 @@ int main() {
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+      <section class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
@@ -699,6 +633,22 @@ int main() {
         </div>
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#控制15BY2二相四线步进电机"><span class="nav-number">1.</span> <span class="nav-text">控制15BY2二相四线步进电机</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#在1602LCD上输出一个整数"><span class="nav-number">2.</span> <span class="nav-text">在1602LCD上输出一个整数</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       
@@ -874,9 +824,9 @@ int main() {
     
       <script type="text/javascript">
         var disqus_config = function () {
-          this.page.url = 'https://www.yangyilts.com/2018/PAT-A-1077-Kuchiguse.html/';
-          this.page.identifier = '2018/PAT-A-1077-Kuchiguse.html/';
-          this.page.title = 'PAT-A 1077.Kuchiguse';
+          this.page.url = 'https://www.yangyilts.com/2018/msp430单片机开发笔记.html/';
+          this.page.identifier = '2018/msp430单片机开发笔记.html/';
+          this.page.title = 'msp430单片机开发笔记';
         };
         var d = document, s = d.createElement('script');
         s.src = 'https://yangyilts.disqus.com/embed.js';
